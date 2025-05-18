@@ -168,7 +168,7 @@ const QuestionComponent: React.FC<Props> = ({
             <TextArea
               minLength={5}
               autoSize={true}
-              value={questionInfor?.title}
+              value={questionInfor?.description}
               variant="borderless"
               readOnly
               style={{ resize: "none", color: "#000" }}
