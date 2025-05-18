@@ -51,6 +51,8 @@ export const generateQuestionQueue = (
         queue.push(`/part/${sectionId}/question/${question.id}`);
       });
     });
+
+  queue.push("/final-result");
   return queue;
 };
 

@@ -17,8 +17,6 @@ export const useQueueNavigator = () => {
     const currentIndex = queue.indexOf(currentPath);
     if (currentIndex >= 0 && currentIndex + 1 < queue.length) {
       router.push(queue[currentIndex + 1]);
-    } else {
-      router.push("/final-result");
     }
   };
 
