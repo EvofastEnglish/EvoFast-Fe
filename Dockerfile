@@ -30,5 +30,5 @@ EXPOSE 3000
 # The "node" user is provided in the Node.js Alpine base image
 USER node
 
-# Launch app with PM2
+# Launch app with PM2 
 CMD [ "pm2-runtime", "start", "npm", "--", "run", "dev" ]
