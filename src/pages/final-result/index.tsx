@@ -10,7 +10,7 @@ import {
 import { localStorageService } from "@/utils/localstorage";
 import { Input, Skeleton } from "antd";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const BasicLayout = dynamic(() => import("@layout/BasicLayout"), {
   ssr: false,
@@ -21,8 +21,7 @@ const { TextArea } = Input;
 const FinalResult: React.FC = () => {
   const [finalResult, setFinalResult] = useState<AiTestSessionDTOResponse>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const completeAITest = () => {
+  const completeAITest = useCallback(() => {
     setIsLoading(true);
     const sessionId = localStorageService.get<string>(AI_TEST_SESSION_ID, "");
 
@@ -36,7 +35,7 @@ const FinalResult: React.FC = () => {
         setIsLoading(false);
         console.log(error);
       });
-  };
+  }, []);
 
   useEffect(() => {
     completeAITest();
