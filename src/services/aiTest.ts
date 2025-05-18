@@ -33,10 +33,23 @@ const getAiTestsResult = async (id: string): Promise<AiTestResultResponse> => {
   return response.data;
 };
 
+const completeAiTest = async (
+  aiTestSessionId: string
+): Promise<AiTestSessionDTOResponse> => {
+  const response = await httpClient.post<AiTestSessionDTOResponse>({
+    url: apiLinks.aiTest.completeAiTest,
+    data: {
+      aiTestSessionId: aiTestSessionId,
+    },
+  });
+  return response.data;
+};
+
 const aiTestService = {
   getAiTests,
   startAiTest,
   getAiTestsResult,
+  completeAiTest,
 };
 
 export default aiTestService;

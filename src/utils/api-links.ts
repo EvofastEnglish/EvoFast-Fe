@@ -11,6 +11,7 @@ const apiLinks = {
     getAiTest: `${baseUrl}/AiTests`,
     startAiTest: `${baseUrl}/AiTests/Start`,
     resultAiTest: `${baseUrl}/AiTests/Result`,
+    completeAiTest: `${baseUrl}/AiTests/Complete/Session`,
   },
   aiTestSection: {
     startAiTestSection: `${baseUrl}/AiTestSections/Start`,

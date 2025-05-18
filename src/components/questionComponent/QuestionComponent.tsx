@@ -35,9 +35,11 @@ const QuestionComponent: React.FC<Props> = ({
 
   const [isRecording, setIsRecording] = useState(false);
   const [blobURL, setBlobURL] = useState("");
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState(questionInfor?.recordingTimeSeconds || 0);
   const [fileMp3, setFileMp3] = useState<File>();
-  const [count, setCount] = useState(3);
+  const [count, setCount] = useState(
+    3 + (questionInfor?.thinkingTimeSeconds || 0)
+  );
   const [isDisable, setIsDisable] = useState<boolean>(true);
 
   const stopRecording = async () => {
@@ -75,7 +77,6 @@ const QuestionComponent: React.FC<Props> = ({
     try {
       await recorderRef.current.start();
       setIsRecording(true);
-      setTimer(questionInfor?.recordingTimeSeconds || 0);
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
         videoRef.current.loop = true;
@@ -135,7 +136,7 @@ const QuestionComponent: React.FC<Props> = ({
     setIsRecording(false);
     setBlobURL("");
     setFileMp3(undefined);
-    setTimer(0);
+    setTimer(questionInfor?.recordingTimeSeconds || 0);
     setCount(3 + (questionInfor?.thinkingTimeSeconds || 0));
     recorderRef.current = new MicRecorder({ bitRate: 320 });
 

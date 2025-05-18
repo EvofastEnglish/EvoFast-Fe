@@ -16,7 +16,6 @@ import { generateQuestionQueue } from "@/utils/helpers";
 import { localStorageService } from "@/utils/localstorage";
 import { Button, Input, Skeleton } from "antd";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 
 const BasicLayout = dynamic(() => import("@layout/BasicLayout"), {
@@ -26,7 +25,6 @@ const BasicLayout = dynamic(() => import("@layout/BasicLayout"), {
 const { TextArea } = Input;
 
 const Home: React.FC = () => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const { saveQueue } = useQuestionQueue();
   const { goToFirst } = useQueueNavigator();
