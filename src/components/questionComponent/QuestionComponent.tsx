@@ -5,10 +5,11 @@ import aiTestSectionService from "@/services/aiTestSection";
 import {
   AI_TEST_SESSION_ID,
   borderSolidColor,
+  LABEL_SPINING,
   primaryColorButton,
 } from "@/utils/constants";
 import { localStorageService } from "@/utils/localstorage";
-import { Button, Input, Skeleton } from "antd";
+import { Button, Input, Skeleton, Spin } from "antd";
 import MicRecorder from "mic-recorder-to-mp3";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -41,6 +42,7 @@ const QuestionComponent: React.FC<Props> = ({
     3 + (questionInfor?.thinkingTimeSeconds || 0)
   );
   const [isDisable, setIsDisable] = useState<boolean>(true);
+  const [isSpining, setIsSpining] = useState<boolean>(false);
 
   const stopRecording = async () => {
     try {
@@ -100,6 +102,8 @@ const QuestionComponent: React.FC<Props> = ({
   }, []);
 
   const handleSubmitTest = async () => {
+    setIsSpining(true);
+    setIsDisable(true);
     const sessionId = localStorageService.get<string>(AI_TEST_SESSION_ID, "");
 
     const formData = new FormData();
@@ -113,9 +117,12 @@ const QuestionComponent: React.FC<Props> = ({
       await aiTestSectionService.completeAiTestSectionQuestion(formData);
       const currentPath = router.asPath;
       if (!isLast(currentPath)) {
-        goToNext(currentPath);
+        await goToNext(currentPath);
       }
+      setIsSpining(false);
     } catch (error) {
+      setIsSpining(false);
+      setIsDisable(false);
       console.error(error);
     }
   };
@@ -139,6 +146,7 @@ const QuestionComponent: React.FC<Props> = ({
     setTimer(questionInfor?.recordingTimeSeconds || 0);
     setCount(3 + (questionInfor?.thinkingTimeSeconds || 0));
     recorderRef.current = new MicRecorder({ bitRate: 320 });
+    setIsSpining(false);
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -159,29 +167,31 @@ const QuestionComponent: React.FC<Props> = ({
         className="relative w-4/5 md:w-1/2 inset-0 m-auto mt-[5%] shadow pt-2"
         style={{ border: `1px solid ${borderSolidColor}` }}
       >
-        <Skeleton loading={questionInfor === undefined}>
-          <div className="text-center">
-            <span className="text-5xl">{count}</span>
-          </div>
+        <Spin tip={LABEL_SPINING} spinning={isSpining}>
+          <Skeleton loading={questionInfor === undefined}>
+            <div className="text-center">
+              <span className="text-5xl">{count}</span>
+            </div>
 
-          <div className="p-2.5">
-            <TextArea
-              minLength={5}
-              autoSize={true}
-              value={questionInfor?.description}
-              variant="borderless"
-              readOnly
-              style={{ resize: "none", color: "#000" }}
+            <div className="p-2.5">
+              <TextArea
+                minLength={5}
+                autoSize={true}
+                value={questionInfor?.description}
+                variant="borderless"
+                readOnly
+                style={{ resize: "none", color: "#000" }}
+              />
+            </div>
+
+            <RecorderComponent
+              isRecording={isRecording}
+              videoRef={videoRef}
+              timer={timer}
+              blobURL={blobURL}
             />
-          </div>
-
-          <RecorderComponent
-            isRecording={isRecording}
-            videoRef={videoRef}
-            timer={timer}
-            blobURL={blobURL}
-          />
-        </Skeleton>
+          </Skeleton>
+        </Spin>
       </div>
 
       <div className="flex justify-center mt-3">

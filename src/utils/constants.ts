@@ -8,3 +8,4 @@ export const AI_Test_Id_KEY = "AITestId";
 export const ROLE_ASSISTANT = "assistant";
 export const AI_TEST_SESSION_ID = "aiTestSessionId";
 export const QUESTION_QUEUE = "questionQueue";
+export const LABEL_SPINING = "読み込み中...";

@@ -1,10 +1,15 @@
 "use client";
 
-import { borderSolidColor, primaryColorButton } from "@/utils/constants";
+import {
+  borderSolidColor,
+  LABEL_SPINING,
+  primaryColorButton,
+} from "@/utils/constants";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { App as AntdApp, Button, Form, Input } from "antd";
+import { App as AntdApp, Button, Form, Input, Spin } from "antd";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface SignInFormValues {
@@ -17,16 +22,21 @@ const Signin: React.FC = () => {
   const { t } = useTranslation();
   const { message } = AntdApp.useApp();
 
+  const [isSpining, setIsSpining] = useState<boolean>(false);
+
   const onFinish = async (values: SignInFormValues) => {
+    setIsSpining(true);
     const res = await signIn("credentials", {
       redirect: false,
       username: values.email,
       password: values.password,
     });
     if (res?.error) {
+      setIsSpining(false);
       return message.error(res?.error);
     } else {
       message.success(t("Login successful!"));
+      setIsSpining(false);
       return router.push("/");
     }
   };
@@ -78,16 +88,19 @@ const Signin: React.FC = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button
-                block
-                htmlType="submit"
-                style={{
-                  backgroundColor: `${primaryColorButton}`,
-                  color: "#fff",
-                }}
-              >
-                {t("Login")}
-              </Button>
+              <Spin tip={LABEL_SPINING} spinning={isSpining}>
+                <Button
+                  block
+                  htmlType="submit"
+                  style={{
+                    backgroundColor: `${primaryColorButton}`,
+                    color: "#fff",
+                  }}
+                >
+                  {t("Login")}
+                </Button>
+              </Spin>
+
               {/* {t("or")}{" "}
               <a onClick={() => router.push("/register")}>
                 {t("Register now!")}

@@ -5,26 +5,26 @@ export const useQueueNavigator = () => {
   const router = useRouter();
   const { getQueue, clearQueue } = useQuestionQueue();
 
-  const goToFirst = () => {
+  const goToFirst = async () => {
     const queue = getQueue();
     if (queue.length > 0) {
-      router.push(queue[0]);
+      await router.push(queue[0]);
     }
   };
 
-  const goToNext = (currentPath: string) => {
+  const goToNext = async (currentPath: string) => {
     const queue = getQueue();
     const currentIndex = queue.indexOf(currentPath);
     if (currentIndex >= 0 && currentIndex + 1 < queue.length) {
-      router.push(queue[currentIndex + 1]);
+      await router.push(queue[currentIndex + 1]);
     }
   };
 
-  const goToPrev = (currentPath: string) => {
+  const goToPrev = async (currentPath: string) => {
     const queue = getQueue();
     const currentIndex = queue.indexOf(currentPath);
     if (currentIndex > 0) {
-      router.push(queue[currentIndex - 1]);
+      await router.push(queue[currentIndex - 1]);
     }
   };
 

@@ -2,8 +2,8 @@ import PartIntroduction from "@/components/partIntroduction/PartIntroduction";
 import { useQueueNavigator } from "@/hook/use-queue-navigator";
 import { AiTestSection } from "@/model/aiTest";
 import { useAppSelector } from "@/store/hooks";
-import { primaryColorButton } from "@/utils/constants";
-import { Button, Skeleton } from "antd";
+import { LABEL_SPINING, primaryColorButton } from "@/utils/constants";
+import { Button, Skeleton, Spin } from "antd";
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -26,6 +26,8 @@ const Part: React.FC<Props> = (props) => {
 
   const [dataAiTestSection, setDataAiTestSection] = useState<AiTestSection>();
   const [isLoading, setIsloading] = useState<boolean>(false);
+  const [isSpining, setIsSpining] = useState<boolean>(false);
+  const [isDisableBtn, setisDisableBtn] = useState<boolean>(false);
 
   const getContentPart = useCallback(() => {
     if (dataAiTests.aiTests.data.length === 0) return;
@@ -44,10 +46,12 @@ const Part: React.FC<Props> = (props) => {
   }, [partId]);
 
   const startAITestSection = async () => {
+    setIsSpining(true);
     const currentPath = router.asPath;
     if (!isLast(currentPath)) {
-      goToNext(currentPath);
+      await goToNext(currentPath);
     }
+    setIsSpining(false);
   };
 
   useEffect(() => {
@@ -70,12 +74,17 @@ const Part: React.FC<Props> = (props) => {
     <BasicLayout
       content={
         <div>
-          <Skeleton loading={isLoading}>
-            <PartIntroduction content={dataAiTestSection?.description ?? ""} />
-          </Skeleton>
+          <Spin tip={LABEL_SPINING} spinning={isSpining}>
+            <Skeleton loading={isLoading}>
+              <PartIntroduction
+                content={dataAiTestSection?.description ?? ""}
+              />
+            </Skeleton>
+          </Spin>
 
           <div className="flex justify-center mt-3">
             <Button
+              disabled={isSpining}
               style={{
                 backgroundColor: `${primaryColorButton}`,
                 color: "#fff",

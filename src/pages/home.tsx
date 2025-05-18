@@ -10,13 +10,14 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   AI_TEST_SESSION_ID,
   borderSolidColor,
+  LABEL_SPINING,
   primaryColorButton,
 } from "@/utils/constants";
 import { generateQuestionQueue } from "@/utils/helpers";
 import { localStorageService } from "@/utils/localstorage";
-import { Button, Input, Skeleton } from "antd";
+import { Button, Input, Skeleton, Spin } from "antd";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const BasicLayout = dynamic(() => import("@layout/BasicLayout"), {
   ssr: false,
@@ -28,6 +29,8 @@ const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const { saveQueue } = useQuestionQueue();
   const { goToFirst } = useQueueNavigator();
+  const [isSpining, setIsSpining] = useState<boolean>(false);
+  const [isDisableBtn, setisDisableBtn] = useState<boolean>(false);
 
   const { dataAiTests, getAiTestloading } = useAppSelector(
     (state) => state.aiTest
@@ -42,6 +45,8 @@ const Home: React.FC = () => {
   }, [dispatch]);
 
   const startAiTest = async () => {
+    setIsSpining(true);
+    setisDisableBtn(true);
     await aiTestService
       .startAiTest(dataAiTests.aiTests.data[0].id)
       .then((response) => {
@@ -50,8 +55,13 @@ const Home: React.FC = () => {
           response.aiTestSessionDto.id
         );
         goToFirst();
+        setIsSpining(false);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        setIsSpining(false);
+        setisDisableBtn(false);
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -66,27 +76,30 @@ const Home: React.FC = () => {
             className="relative shadow w-4/5 md:w-1/2 inset-0 m-auto font-japaneseSans min-h-[400px]"
             style={{ border: `1px solid ${borderSolidColor}` }}
           >
-            <Skeleton loading={getAiTestloading}>
-              {dataAiTests.aiTests.count > 0 ? (
-                <>
-                  <TextArea
-                    autoSize={true}
-                    value={dataAiTests.aiTests.data[0].description}
-                    variant="borderless"
-                    readOnly
-                    style={{ resize: "none", color: "#000" }}
-                  />
-                  <div className="p-4">
-                    <ExamStructureTable />
-                  </div>
-                </>
-              ) : (
-                <></>
-              )}
-            </Skeleton>
+            <Spin tip={LABEL_SPINING} spinning={isSpining}>
+              <Skeleton loading={getAiTestloading}>
+                {dataAiTests.aiTests.count > 0 ? (
+                  <>
+                    <TextArea
+                      autoSize={true}
+                      value={dataAiTests.aiTests.data[0].description}
+                      variant="borderless"
+                      readOnly
+                      style={{ resize: "none", color: "#000" }}
+                    />
+                    <div className="p-4">
+                      <ExamStructureTable />
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </Skeleton>
+            </Spin>
           </div>
           <div className="flex justify-center mt-3">
             <Button
+              disabled={isDisableBtn}
               style={{
                 backgroundColor: `${primaryColorButton}`,
                 color: "#fff",
