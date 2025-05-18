@@ -180,7 +180,7 @@ const QuestionComponent: React.FC<Props> = ({
                 value={questionInfor?.description}
                 variant="borderless"
                 readOnly
-                style={{ resize: "none", color: "#000" }}
+                style={{ resize: "none", color: "#000", textAlign: "center" }}
               />
             </div>
 
