@@ -47,7 +47,7 @@ export const generateQuestionQueue = (
       const sectionId = section.id;
       queue.push(`/part/${sectionId}`);
 
-      section.aiTestSectionQuestions.forEach((question, index) => {
+      section.aiTestSectionQuestions.forEach((question) => {
         queue.push(`/part/${sectionId}/question/${question.id}`);
       });
     });

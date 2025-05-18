@@ -27,7 +27,6 @@ const Part: React.FC<Props> = (props) => {
   const [dataAiTestSection, setDataAiTestSection] = useState<AiTestSection>();
   const [isLoading, setIsloading] = useState<boolean>(false);
   const [isSpining, setIsSpining] = useState<boolean>(false);
-  const [isDisableBtn, setisDisableBtn] = useState<boolean>(false);
 
   const getContentPart = useCallback(() => {
     if (dataAiTests.aiTests.data.length === 0) return;
