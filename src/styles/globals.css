@@ -1,0 +1,9 @@
+@import 'tailwindcss';
+
+@theme {
+
+  --text-header-table: 14px;
+  --text-body-table: 12px;
+  --font-japaneseSans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  --color-gray-chat: #f0f0f0;
+}
