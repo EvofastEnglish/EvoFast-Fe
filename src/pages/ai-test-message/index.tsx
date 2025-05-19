@@ -1,8 +1,8 @@
 "use client";
 
-import { AiTestResultResponse } from "@/model/aiTest";
+import { ChatMessageResponse } from "@/model/aiTest";
 import aiTestService from "@/services/aiTest";
-import { AI_Test_Id_KEY, ROLE_ASSISTANT } from "@/utils/constants";
+import { AI_TEST_SESSION_ID, ROLE_ASSISTANT } from "@/utils/constants";
 import { localStorageService } from "@/utils/localstorage";
 import { Input, Skeleton } from "antd";
 import dynamic from "next/dynamic";
@@ -15,20 +15,22 @@ const BasicLayout = dynamic(() => import("@layout/BasicLayout"), {
 const { TextArea } = Input;
 
 const AiTestResult: React.FC = () => {
-  const [dataAiTestResult, setDataAiTestResult] =
-    useState<AiTestResultResponse>();
+  const [dataAiTestMessage, setDataAiTestMessage] =
+    useState<ChatMessageResponse>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getData = useCallback(async () => {
     setIsLoading(true);
-    const aiTestId = localStorageService.get<string>(AI_Test_Id_KEY, "");
-    if (aiTestId === "") return;
+    const aiTestSessionId = localStorageService.get<string>(
+      AI_TEST_SESSION_ID,
+      ""
+    );
+    if (aiTestSessionId === "") return;
 
     await aiTestService
-      .getAiTestsResult(aiTestId)
+      .getChatMessageAiTest(aiTestSessionId)
       .then((res) => {
-        console.log(res);
-        setDataAiTestResult(res);
+        setDataAiTestMessage(res);
         setIsLoading(false);
       })
       .catch((error) => console.log(error))
@@ -46,7 +48,7 @@ const AiTestResult: React.FC = () => {
       content={
         <Skeleton loading={isLoading}>
           <div className="relative w-4/5 md:w-1/2 inset-0 m-auto">
-            {dataAiTestResult?.messages.map((item, index) => {
+            {dataAiTestMessage?.chatMessageDtos.map((item, index) => {
               return (
                 <div
                   key={index}
@@ -58,7 +60,7 @@ const AiTestResult: React.FC = () => {
                 >
                   <div className="border border-white  bg-gray-chat p-2.5 max-w-4/5 w-full rounded-2xl mb-11">
                     <TextArea
-                      value={item.contents[0].text}
+                      value={item.content}
                       variant="borderless"
                       readOnly
                       autoSize={true}

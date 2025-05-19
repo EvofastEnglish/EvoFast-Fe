@@ -16,7 +16,7 @@ const protectedRoutes: RouteRule[] = [
     }),
   },
   { pattern: new URLPattern({ pathname: "/final-result" }) },
-  { pattern: new URLPattern({ pathname: "/ai-test-result" }) },
+  { pattern: new URLPattern({ pathname: "/ai-test-message" }) },
 ];
 
 export async function middleware(req: NextRequest) {

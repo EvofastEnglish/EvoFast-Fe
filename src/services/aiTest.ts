@@ -2,6 +2,7 @@ import {
   AiTestResult,
   AiTestResultResponse,
   AiTestSessionDTOResponse,
+  ChatMessageResponse,
 } from "@/model/aiTest";
 import apiLinks from "@/utils/api-links";
 import httpClient from "@/utils/http-client";
@@ -45,11 +46,21 @@ const completeAiTest = async (
   return response.data;
 };
 
+const getChatMessageAiTest = async (
+  sessionId: string
+): Promise<ChatMessageResponse> => {
+  const response = await httpClient.get<ChatMessageResponse>({
+    url: `${apiLinks.aiTest.chatMessageAiTest}/${sessionId}/ChatMessage`,
+  });
+  return response.data;
+};
+
 const aiTestService = {
   getAiTests,
   startAiTest,
   getAiTestsResult,
   completeAiTest,
+  getChatMessageAiTest,
 };
 
 export default aiTestService;

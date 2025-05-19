@@ -61,3 +61,13 @@ export interface AiTestSessionDTO {
   summary: string;
   isCompleted: boolean;
 }
+
+export interface ChatMessageResponse {
+  chatMessageDtos: ChatMessageDtos[];
+}
+
+export interface ChatMessageDtos {
+  role: string;
+  content: string;
+  createdAt: string;
+}
