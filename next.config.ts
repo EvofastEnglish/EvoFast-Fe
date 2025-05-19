@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
     "rc-tree",
     "rc-table",
   ],
+  devIndicators: false,
 };
 
 export default nextConfig;
