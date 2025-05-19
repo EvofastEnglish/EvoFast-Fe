@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   AI_TEST_SESSION_ID,
   borderSolidColor,
+  DATA_AI_TEST,
   LABEL_SPINING,
   primaryColorButton,
 } from "@/utils/constants";
@@ -39,6 +40,7 @@ const Home: React.FC = () => {
   const getData = useCallback(async () => {
     await dispatch(getDataAiTests()).then(({ payload }) => {
       const data = payload as AiTestResult;
+      localStorageService.set<AiTestResult>(DATA_AI_TEST, data);
       const queue = generateQuestionQueue(data.aiTests.data[0].aiTestSections);
       saveQueue(queue);
     });

@@ -30,23 +30,22 @@ const QuestionComponent: React.FC<Props> = ({
   const router = useRouter();
   const { goToNext, isLast } = useQueueNavigator();
 
-  const recorderRef = useRef(new MicRecorder({ bitRate: 320 }));
+  const recorderRef = useRef<MicRecorder>(new MicRecorder({ bitRate: 320 }));
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const [isRecording, setIsRecording] = useState(false);
   const [blobURL, setBlobURL] = useState("");
-  const [timer, setTimer] = useState(questionInfor?.recordingTimeSeconds || 0);
+  const [timer, setTimer] = useState(questionInfor?.recordingTimeSeconds);
   const [fileMp3, setFileMp3] = useState<File>();
-  const [count, setCount] = useState(
-    3 + (questionInfor?.thinkingTimeSeconds || 0)
-  );
+  const [count, setCount] = useState(3 + questionInfor?.thinkingTimeSeconds);
   const [isDisable, setIsDisable] = useState<boolean>(true);
   const [isSpining, setIsSpining] = useState<boolean>(false);
 
-  const stopRecording = async () => {
+  const stopRecording = useCallback(async () => {
     try {
       const [, blob] = await recorderRef.current.stop().getMp3();
+      console.log("blob size:", blob.size);
       const url = URL.createObjectURL(blob);
       setBlobURL(url);
       const file = new File([blob], `recorded_audio_${questionId}.mp3`, {
@@ -73,11 +72,18 @@ const QuestionComponent: React.FC<Props> = ({
         }
       }
     }
-  };
+  }, []);
 
   const startRecording = useCallback(async () => {
     try {
-      await recorderRef.current.start();
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      recorderRef.current = new MicRecorder({ bitRate: 320 });
+
+      await recorderRef.current
+        ?.start()
+        .then(() => {})
+        .catch((e) => {});
       setIsRecording(true);
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
@@ -143,21 +149,23 @@ const QuestionComponent: React.FC<Props> = ({
     setIsRecording(false);
     setBlobURL("");
     setFileMp3(undefined);
-    setTimer(questionInfor?.recordingTimeSeconds || 0);
-    setCount(3 + (questionInfor?.thinkingTimeSeconds || 0));
-    recorderRef.current = new MicRecorder({ bitRate: 320 });
+    setTimer(questionInfor?.recordingTimeSeconds);
+    setCount(3 + questionInfor?.thinkingTimeSeconds);
     setIsSpining(false);
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-  }, [questionId]);
+  }, [questionInfor]);
 
   // Cleanup timer khi unmount
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      if (recorderRef.current) {
+        recorderRef.current.stop();
+      }
     };
   }, []);
 
