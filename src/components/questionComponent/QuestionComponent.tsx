@@ -49,7 +49,7 @@ const QuestionComponent: React.FC<Props> = ({
       const [, blob] = await recorderRef.current.stop().getMp3();
       const url = URL.createObjectURL(blob);
       setBlobURL(url);
-      const file = new File([blob], "recorded_audio.mp3", {
+      const file = new File([blob], `recorded_audio_${questionId}.mp3`, {
         type: "audio/mpeg",
         lastModified: Date.now(),
       });
