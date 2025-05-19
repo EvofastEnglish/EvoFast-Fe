@@ -1,8 +1,12 @@
 import PartIntroduction from "@/components/partIntroduction/PartIntroduction";
 import { useQueueNavigator } from "@/hook/use-queue-navigator";
-import { AiTestSection } from "@/model/aiTest";
-import { useAppSelector } from "@/store/hooks";
-import { LABEL_SPINING, primaryColorButton } from "@/utils/constants";
+import { AiTestResult, AiTestSection } from "@/model/aiTest";
+import {
+  DATA_AI_TEST,
+  LABEL_SPINING,
+  primaryColorButton,
+} from "@/utils/constants";
+import { localStorageService } from "@/utils/localstorage";
 import { Button, Skeleton, Spin } from "antd";
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
@@ -22,13 +26,20 @@ const Part: React.FC<Props> = (props) => {
   const { partId } = props;
   const { goToNext, isLast } = useQueueNavigator();
 
-  const { dataAiTests } = useAppSelector((state) => state.aiTest);
-
   const [dataAiTestSection, setDataAiTestSection] = useState<AiTestSection>();
   const [isLoading, setIsloading] = useState<boolean>(false);
   const [isSpining, setIsSpining] = useState<boolean>(false);
 
   const getContentPart = useCallback(() => {
+    const dataAiTests = localStorageService.get<AiTestResult>(DATA_AI_TEST, {
+      aiTests: {
+        pageIndex: 0,
+        pageSize: 0,
+        count: 0,
+        data: [],
+      },
+    });
+
     if (dataAiTests.aiTests.data.length === 0) return;
 
     setIsloading(true);

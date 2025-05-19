@@ -1,7 +1,8 @@
 import QuestionComponent from "@/components/questionComponent/QuestionComponent";
-import { AiTestSectionQuestions } from "@/model/aiTest";
-import { useAppSelector } from "@/store/hooks";
+import { AiTestResult, AiTestSectionQuestions } from "@/model/aiTest";
+import { DATA_AI_TEST } from "@/utils/constants";
 import { findQuestionById } from "@/utils/helpers";
+import { localStorageService } from "@/utils/localstorage";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -14,11 +15,21 @@ const QuestionPage: React.FC = () => {
   const router = useRouter();
   const { questionId, partId } = router.query;
 
-  const { dataAiTests } = useAppSelector((state) => state.aiTest);
   const [questionInfor, setQuestionInfor] = useState<AiTestSectionQuestions>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const getContentAITestSession = useCallback(() => {
+    setIsLoading(true);
+    setQuestionInfor(undefined);
+
+    const dataAiTests = localStorageService.get<AiTestResult>(DATA_AI_TEST, {
+      aiTests: {
+        pageIndex: 0,
+        pageSize: 0,
+        count: 0,
+        data: [],
+      },
+    });
     if (dataAiTests.aiTests.data.length === 0) {
       setIsLoading(false);
       return;
@@ -44,7 +55,7 @@ const QuestionPage: React.FC = () => {
     <BasicLayout
       content={
         <>
-          {isLoading ? (
+          {isLoading && questionInfor === undefined ? (
             <></>
           ) : (
             <QuestionComponent
