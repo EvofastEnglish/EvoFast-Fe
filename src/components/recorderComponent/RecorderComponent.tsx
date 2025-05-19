@@ -15,8 +15,8 @@ const RecorderComponent: React.FC<Props> = (prop) => {
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
-      e.returnValue = "Đang ghi âm, bạn có chắc muốn rời đi? hee";
-      return "Đang ghi âm, bạn có chắc muốn rời đi?";
+      e.returnValue = "";
+      return "";
     };
 
     if (isRecording) {
