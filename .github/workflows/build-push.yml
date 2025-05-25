@@ -23,6 +23,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
+          platforms: linux/amd64
           push: true
           tags: ${{ secrets.SOLOCODE_USERNAME }}/evofast-frontend:latest
 
