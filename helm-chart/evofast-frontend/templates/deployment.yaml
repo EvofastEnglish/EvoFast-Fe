@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "evofast-frontend.fullname" . }}
+  labels:
+    app: {{ include "evofast-frontend.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "evofast-frontend.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "evofast-frontend.name" . }}
+    spec:
+      containers:
+      - name: {{ include "evofast-frontend.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+        env:
+        - name: NEXTAUTH_URL
+          value: {{ .Values.env.NEXTAUTH_URL | quote }}

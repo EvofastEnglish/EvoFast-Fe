@@ -1,0 +1,37 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_run:
+    workflows: ["Build-Push Docker Image"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'latest'
+
+      - name: Configure kubeconfig
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        run: |
+          echo "$KUBE_CONFIG_DATA" | base64 --decode > $HOME/.kube/config
+
+      - name: Helm upgrade/install
+        run: |
+          helm upgrade --install evofast-frontend ./helm-chart/evofast-frontend \
+            --set image.tag=latest \
+            --set image.repository=${{ secrets.SOLOCODE_USERNAME }}/evofast-frontend-aks
