@@ -7,5 +7,6 @@
     "Email": "Email",
     "Password": "Password",
     "Login successful!": "Login successful!",
-    "Logout": "Logout"
+    "Logout": "Logout",
+    "Please input your password!": "Please input your password!"
 }

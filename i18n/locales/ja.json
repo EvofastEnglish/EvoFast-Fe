@@ -7,5 +7,6 @@
     "Email": "メール",
     "Password": "パスワード",
     "Login successful!": "ログインが成功しました！",
-    "Logout": "ログアウト"
+    "Logout": "ログアウト",
+    "Please input your password!": "パスワードを入力してください!"
 }
