@@ -50,6 +50,4 @@ jobs:
 
       - name: Helm upgrade/install
         run: |
-          helm upgrade --install evofast-frontend ./helm-chart/evofast-frontend \
-            --set image.tag=latest \
-            --set image.repository=${{ secrets.SOLOCODE_USERNAME }}/evofast-frontend-aks
+          helm upgrade --install evofast-frontend ./helm-chart/evofast-frontend
