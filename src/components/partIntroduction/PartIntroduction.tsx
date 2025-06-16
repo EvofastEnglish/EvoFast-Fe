@@ -21,7 +21,7 @@ const PartIntroduction: React.FC<Props> = (prop) => {
         value={content}
         variant="borderless"
         readOnly
-        style={{ resize: "none", color: "#000", textAlign: "center" }}
+        style={{ resize: "none", color: "#000", textAlign: "center", fontSize: '18px', lineHeight:'1.6' }}
       />
     </div>
   );
