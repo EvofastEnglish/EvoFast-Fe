@@ -5,6 +5,8 @@ import aiTestSectionService from "@/services/aiTestSection";
 import {
   AI_TEST_SESSION_ID,
   borderSolidColor,
+  disableColorBtn,
+  LABEL_FINISH_ANSWER_QUESTION,
   LABEL_SPINING,
   primaryColorButton,
 } from "@/utils/constants";
@@ -83,7 +85,7 @@ const QuestionComponent: React.FC<Props> = ({
       await recorderRef.current
         ?.start()
         .then(() => {})
-        .catch((e) => {});
+        .catch((e) => {console.log(e);});
       setIsRecording(true);
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
@@ -202,16 +204,19 @@ const QuestionComponent: React.FC<Props> = ({
         </Spin>
       </div>
 
-      <div className="flex justify-center mt-3">
+      <div className="relative w-4/5 md:w-1/2 inset-0 m-auto font-japaneseSans text-end mt-5">
         <Button
           disabled={isDisable}
           style={{
-            backgroundColor: primaryColorButton,
+            backgroundColor:isDisable ? disableColorBtn : primaryColorButton,
             color: "#fff",
+            height: '40px',
+            width: '100px',
+            fontSize:'17px'
           }}
           onClick={handleSubmitTest}
         >
-          完了
+          {LABEL_FINISH_ANSWER_QUESTION}
         </Button>
       </div>
     </div>
