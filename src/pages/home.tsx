@@ -98,13 +98,17 @@ const Home: React.FC = () => {
                 )}
               </Skeleton>
             </Spin>
+           
           </div>
-          <div className="flex justify-center mt-3">
+           <div className="relative w-4/5 md:w-1/2 inset-0 m-auto font-japaneseSans text-end mt-5">
             <Button
               disabled={isDisableBtn}
               style={{
                 backgroundColor: `${primaryColorButton}`,
                 color: "#fff",
+                height: '40px',
+                width: '150px',
+                fontSize:'17px'
               }}
               onClick={() => startAiTest()}
             >
