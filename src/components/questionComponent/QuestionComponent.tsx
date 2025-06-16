@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import RecorderComponent from "@/components/recorderComponent/RecorderComponent";
 import { useQueueNavigator } from "@/hook/use-queue-navigator";
 import { AiTestSectionQuestions } from "@/model/aiTest";
@@ -9,6 +10,7 @@ import {
   LABEL_FINISH_ANSWER_QUESTION,
   LABEL_SPINING,
   primaryColorButton,
+  time_count_down,
 } from "@/utils/constants";
 import { localStorageService } from "@/utils/localstorage";
 import { Button, Input, Skeleton, Spin } from "antd";
@@ -23,6 +25,8 @@ interface Props {
 }
 
 const { TextArea } = Input;
+
+type Phase = "prepare" | "thinking" | "recording";
 
 const QuestionComponent: React.FC<Props> = ({
   questionId,
@@ -40,9 +44,10 @@ const QuestionComponent: React.FC<Props> = ({
   const [blobURL, setBlobURL] = useState("");
   const [timer, setTimer] = useState(questionInfor?.recordingTimeSeconds);
   const [fileMp3, setFileMp3] = useState<File>();
-  const [count, setCount] = useState(3 + questionInfor?.thinkingTimeSeconds);
+  const [count, setCount] = useState(time_count_down);
   const [isDisable, setIsDisable] = useState<boolean>(true);
   const [isSpining, setIsSpining] = useState<boolean>(false);
+  const [phase, setPhase] = useState<Phase>("prepare");
 
   const stopRecording = useCallback(async () => {
     try {
@@ -141,9 +146,15 @@ const QuestionComponent: React.FC<Props> = ({
       const id = setTimeout(() => setCount(count - 1), 1000);
       return () => clearTimeout(id);
     } else {
+     if (phase === "prepare") {
+      setPhase("thinking");
+      setCount(questionInfor?.thinkingTimeSeconds || 0);
+    } else if (phase === "thinking") {
+      setPhase("recording");
       startRecording();
     }
-  }, [count, startRecording]);
+    }
+  }, [count, phase, questionInfor?.thinkingTimeSeconds, startRecording]);
 
   // Reset khi câu hỏi thay đổi
   useEffect(() => {
@@ -152,8 +163,10 @@ const QuestionComponent: React.FC<Props> = ({
     setBlobURL("");
     setFileMp3(undefined);
     setTimer(questionInfor?.recordingTimeSeconds);
-    setCount(3 + questionInfor?.thinkingTimeSeconds);
+    setCount(time_count_down);
     setIsSpining(false);
+    setPhase("prepare");
+    //setTimeThinking(0)
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -180,7 +193,8 @@ const QuestionComponent: React.FC<Props> = ({
         <Spin tip={LABEL_SPINING} spinning={isSpining}>
           <Skeleton loading={questionInfor === undefined}>
             <div className="text-center">
-              <span className="text-5xl">{count}</span>
+             <span className="text-5xl" 
+             style={{color: `${(count === 0) ? '#fff' : '#000'}`}}>{count}</span> 
             </div>
 
             <div className="p-2.5">
@@ -190,7 +204,7 @@ const QuestionComponent: React.FC<Props> = ({
                 value={questionInfor?.description}
                 variant="borderless"
                 readOnly
-                style={{ resize: "none", color: "#000", textAlign: "center" }}
+                style={{ resize: "none", color: "#000", textAlign: "center", fontSize: '18px' }}
               />
             </div>
 
