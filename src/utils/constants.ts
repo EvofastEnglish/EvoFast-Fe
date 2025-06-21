@@ -1,6 +1,6 @@
 export const borderSolidColor = "#E3EFE8";
 export const ROLE_USER = "User";
-export const primaryColorButton = "#e74afa";
+export const primaryColorButton = "#DC00FF";
 export const contentFinalResult =
   "これでテストは終了です。お疲れさまでした。\n\nあなたの回答は、CEFR基準に基づいて評価されます。\n\nまもなく結果とフィードバックが表示されますので、しばらくお待ちください。";
 export const ROLE_ASSISTANT = "assistant";
@@ -8,3 +8,6 @@ export const AI_TEST_SESSION_ID = "aiTestSessionId";
 export const QUESTION_QUEUE = "questionQueue";
 export const LABEL_SPINING = "読み込み中...";
 export const DATA_AI_TEST = "dataAiTest";
+export const LABEL_FINISH_ANSWER_QUESTION = "次へ";
+export const disableColorBtn = "#BDBDBD";
+export const time_count_down = 5;
