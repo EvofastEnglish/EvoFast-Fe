@@ -39,9 +39,9 @@ const Home: React.FC = () => {
 
   const getData = useCallback(async () => {
     await dispatch(getDataAiTests()).then(({ payload }) => {
-      const data = payload as AiTestResult;
+      const data = payload as AiTestResult;  
       localStorageService.set<AiTestResult>(DATA_AI_TEST, data);
-      const queue = generateQuestionQueue(data.aiTests.data[0].aiTestSections);
+      const queue = generateQuestionQueue(data?.aiTests?.data[0]?.aiTestSections ?? []);
       saveQueue(queue);
     });
   }, [dispatch]);
