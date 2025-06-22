@@ -129,9 +129,9 @@ axios.interceptors.response.use(
       }
 
       isRefreshing = true;
+      const session = await getSession();
+      const refresh_token = session?.user?.refresh_token;
       try {
-        const session = await getSession();
-        const refresh_token = session?.user?.refresh_token;
         if (!refresh_token) throw new Error("No refresh token");
 
         const newTokenData = await authService.refreshToken(refresh_token);
@@ -161,9 +161,9 @@ axios.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newTokenData.access_token}`;
         return axios(originalRequest);
       } catch (err) {
-        console.error("❌ Refresh token failed after CORS-like issue", err);
         requestQueue = [];
         await signOut({ callbackUrl: "/signin" });
+        await authService.removeToken(refresh_token!);
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
