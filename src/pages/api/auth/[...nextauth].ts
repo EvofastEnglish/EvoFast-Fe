@@ -4,7 +4,6 @@ import moment from "moment";
 import NextAuth, { User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { signOut } from "next-auth/react";
 
 export default NextAuth({
   providers: [
@@ -95,7 +94,6 @@ async function refreshAccessToken(token: JWT) {
     };
   } catch (error) {
     console.error("Lỗi khi refresh token:", error);
-    signOut();
     return {
       ...token,
       error: "RefreshAccessTokenError",
