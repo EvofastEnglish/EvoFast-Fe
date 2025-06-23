@@ -26,8 +26,6 @@ interface Props {
 
 const { TextArea } = Input;
 
-type Phase = "prepare" | "thinking" | "recording";
-
 const QuestionComponent: React.FC<Props> = ({
   questionId,
   partId,
@@ -47,7 +45,6 @@ const QuestionComponent: React.FC<Props> = ({
   const [count, setCount] = useState(time_count_down);
   const [isDisable, setIsDisable] = useState<boolean>(true);
   const [isSpining, setIsSpining] = useState<boolean>(false);
-  const [phase, setPhase] = useState<Phase>("prepare");
 
   const stopRecording = useCallback(async () => {
     try {
@@ -145,16 +142,10 @@ const QuestionComponent: React.FC<Props> = ({
     if (count > 0) {
       const id = setTimeout(() => setCount(count - 1), 1000);
       return () => clearTimeout(id);
-    } else {
-     if (phase === "prepare") {
-      setPhase("thinking");
-      setCount(questionInfor?.thinkingTimeSeconds || 0);
-    } else if (phase === "thinking") {
-      setPhase("recording");
+    }else{
       startRecording();
-    }
-    }
-  }, [count, phase, questionInfor?.thinkingTimeSeconds, startRecording]);
+    } 
+  }, [count, startRecording]);
 
   // Reset khi câu hỏi thay đổi
   useEffect(() => {
@@ -163,10 +154,8 @@ const QuestionComponent: React.FC<Props> = ({
     setBlobURL("");
     setFileMp3(undefined);
     setTimer(questionInfor?.recordingTimeSeconds);
-    setCount(time_count_down);
+    setCount(questionInfor?.thinkingTimeSeconds === 30 ? 30 :time_count_down);
     setIsSpining(false);
-    setPhase("prepare");
-    //setTimeThinking(0)
 
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
