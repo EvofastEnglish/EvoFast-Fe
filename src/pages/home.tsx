@@ -14,7 +14,7 @@ import {
   LABEL_SPINING,
   primaryColorButton,
 } from "@/utils/constants";
-import { generateQuestionQueue } from "@/utils/helpers";
+import { generateQuestionQueue, updateSectionDescriptions } from "@/utils/helpers";
 import { localStorageService } from "@/utils/localstorage";
 import { Button, Input, Skeleton, Spin } from "antd";
 import dynamic from "next/dynamic";
@@ -39,9 +39,23 @@ const Home: React.FC = () => {
 
   const getData = useCallback(async () => {
     await dispatch(getDataAiTests()).then(({ payload }) => {
-      const data = payload as AiTestResult;  
-      localStorageService.set<AiTestResult>(DATA_AI_TEST, data);
-      const queue = generateQuestionQueue(data?.aiTests?.data[0]?.aiTestSections ?? []);
+      const data = payload as AiTestResult;
+
+      const updated = {
+        ...data,
+        aiTests: {
+          ...data.aiTests,
+          data: data.aiTests.data.map(aiTest => ({
+            ...aiTest,
+            aiTestSections: updateSectionDescriptions(aiTest.aiTestSections),
+          })),
+        },
+      };
+
+      localStorageService.set<AiTestResult>(DATA_AI_TEST, updated);
+      const queue = generateQuestionQueue(
+        updated?.aiTests?.data[0]?.aiTestSections ?? []
+      );
       saveQueue(queue);
     });
   }, [dispatch]);
@@ -98,17 +112,16 @@ const Home: React.FC = () => {
                 )}
               </Skeleton>
             </Spin>
-           
           </div>
-           <div className="relative w-4/5 md:w-1/2 inset-0 m-auto font-japaneseSans text-end mt-5">
+          <div className="relative w-4/5 md:w-1/2 inset-0 m-auto font-japaneseSans text-end mt-5">
             <Button
               disabled={isDisableBtn}
               style={{
                 backgroundColor: `${primaryColorButton}`,
                 color: "#fff",
-                height: '40px',
-                width: '150px',
-                fontSize:'17px'
+                height: "40px",
+                width: "150px",
+                fontSize: "17px",
               }}
               onClick={() => startAiTest()}
             >
