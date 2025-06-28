@@ -64,7 +64,7 @@ jobs:
             This PR was automatically created by GitHub Actions after pushing a new Docker image.
               New tag: `${{ env.IMAGE_TAG }}`
           branch: update-image-${{ github.sha }}
-          base: main
+          base: develop
           merge: true
           merge-method: squash
           
