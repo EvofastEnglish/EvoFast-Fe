@@ -41,7 +41,18 @@ jobs:
         with:
           repository: EvofastEnglish/evofast-frontend-chart
           token: ${{ secrets.GH_TOKEN }}
-          path: helm-chart
+          
+      - name: Update values.yaml with new image tag
+        run: |
+            git config user.email "ci-bot@github.com"
+            git config user.name "CI Bot"
+  
+            git checkout -b update-image-${{ github.sha }}
+  
+            sed -i "s|tag: .*|tag: ${{ env.IMAGE_TAG }}|" values.yaml
+  
+            git commit -am "chore: update image tag to ${{ env.IMAGE_TAG }}"
+            git push origin update-image-${{ github.sha }}
 
       # - name: Setup kubectl
       #   uses: azure/setup-kubectl@v3
