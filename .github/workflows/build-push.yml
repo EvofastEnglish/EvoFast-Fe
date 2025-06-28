@@ -41,9 +41,11 @@ jobs:
         with:
           repository: EvofastEnglish/evofast-frontend-chart
           token: ${{ secrets.GH_TOKEN }}
+          path: evofast-frontend-chart
           
       - name: Update values.yaml with new image tag
         run: |
+            cd evofast-frontend-chart
             git config user.email "ci-bot@github.com"
             git config user.name "CI Bot"
   
@@ -58,6 +60,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GH_TOKEN }}
+          path: evofast-frontend-chart
           commit-message: "chore: update image tag to ${{ env.IMAGE_TAG }}"
           title: "Update image tag to ${{ env.IMAGE_TAG }}"
           body: |
@@ -66,7 +69,7 @@ jobs:
           branch: update-image-${{ github.sha }}
           base: main
           merge: true
-          merge-method: squash  # hoặc merge, rebase
+          merge-method: squash
           
 
       # - name: Setup kubectl
