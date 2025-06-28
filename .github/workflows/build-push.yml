@@ -48,14 +48,14 @@ jobs:
             echo "🔍 Root workspace:"
             ls -lah
   
-            echo "📁 helm-chart contents:"
-            ls -lah helm-chart
+            echo "📁 evofast-frontend-chart contents:"
+            ls -lah evofast-frontend-chart
   
-            echo "📂 Full tree of helm-chart:"
-            ls -R helm-chart
+            echo "📂 Full tree of evofast-frontend-chart:"
+            ls -R evofast-frontend-chart
   
             echo "🧐 Check if values.yaml exists:"
-            test -f helm-chart/values.yaml && echo "✅ values.yaml found!" || exit 1
+            test -f evofast-frontend-chart/values.yaml && echo "✅ values.yaml found!" || exit 1
           
       # - name: Update values.yaml with new image tag
       #   run: |
