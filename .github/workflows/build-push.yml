@@ -54,6 +54,15 @@ jobs:
             git commit -am "chore: update image tag to ${{ env.IMAGE_TAG }}"
             git push origin update-image-${{ github.sha }}
 
+      - name: Create Pull Request to Helm chart repo
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          commit-message: "chore: update image tag to ${{ env.IMAGE_TAG }}"
+          title: "Update image tag to ${{ env.IMAGE_TAG }}"
+          branch: update-image-${{ github.sha }}
+          base: main
+
       # - name: Setup kubectl
       #   uses: azure/setup-kubectl@v3
       #   with:
