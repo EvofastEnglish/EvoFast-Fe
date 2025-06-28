@@ -42,34 +42,48 @@ jobs:
           repository: EvofastEnglish/evofast-frontend-chart
           token: ${{ secrets.GH_TOKEN }}
           path: evofast-frontend-chart
-          
-      - name: Update values.yaml with new image tag
-        run: |
-            cd evofast-frontend-chart
-            git config user.email "ci-bot@github.com"
-            git config user.name "CI Bot"
-  
-            git checkout -b update-image-${{ github.sha }}
-  
-            sed -i "s|tag: .*|tag: ${{ env.IMAGE_TAG }}|" values.yaml
-  
-            git commit -am "chore: update image tag to ${{ env.IMAGE_TAG }}"
-            git push origin update-image-${{ github.sha }}
 
-      - name: Create Pull Request to Helm chart repo
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          path: evofast-frontend-chart
-          commit-message: "chore: update image tag to ${{ env.IMAGE_TAG }}"
-          title: "Update image tag to ${{ env.IMAGE_TAG }}"
-          body: |
-            This PR was automatically created by GitHub Actions after pushing a new Docker image.
-              New tag: `${{ env.IMAGE_TAG }}`
-          branch: update-image-${{ github.sha }}
-          base: main
-          merge: true
-          merge-method: squash
+      - name: 📂 Check files in helm-chart
+        run: |
+            echo "🔍 Root workspace:"
+            ls -lah
+  
+            echo "📁 helm-chart contents:"
+            ls -lah helm-chart
+  
+            echo "📂 Full tree of helm-chart:"
+            ls -R helm-chart
+  
+            echo "🧐 Check if values.yaml exists:"
+            test -f helm-chart/values.yaml && echo "✅ values.yaml found!" || exit 1
+          
+      # - name: Update values.yaml with new image tag
+      #   run: |
+      #       cd evofast-frontend-chart
+      #       git config user.email "ci-bot@github.com"
+      #       git config user.name "CI Bot"
+  
+      #       git checkout -b update-image-${{ github.sha }}
+  
+      #       sed -i "s|tag: .*|tag: ${{ env.IMAGE_TAG }}|" values.yaml
+  
+      #       git commit -am "chore: update image tag to ${{ env.IMAGE_TAG }}"
+      #       git push origin update-image-${{ github.sha }}
+
+      # - name: Create Pull Request to Helm chart repo
+      #   uses: peter-evans/create-pull-request@v5
+      #   with:
+      #     token: ${{ secrets.GH_TOKEN }}
+      #     path: evofast-frontend-chart
+      #     commit-message: "chore: update image tag to ${{ env.IMAGE_TAG }}"
+      #     title: "Update image tag to ${{ env.IMAGE_TAG }}"
+      #     body: |
+      #       This PR was automatically created by GitHub Actions after pushing a new Docker image.
+      #         New tag: `${{ env.IMAGE_TAG }}`
+      #     branch: update-image-${{ github.sha }}
+      #     base: main
+      #     merge: true
+      #     merge-method: squash
           
 
       # - name: Setup kubectl
