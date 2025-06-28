@@ -41,9 +41,10 @@ jobs:
         with:
           repository: EvofastEnglish/evofast-frontend-chart
           token: ${{ secrets.GH_TOKEN }}
+          ref: develop
           path: evofast-frontend-chart
 
-      - name: Install yq 
+      - name: Install yq
         run: |
             sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
             sudo chmod +x /usr/bin/yq
@@ -53,20 +54,26 @@ jobs:
             cd evofast-frontend-chart
             yq eval '.image.tag = strenv(IMAGE_TAG)' -i values.yaml
 
-      - name: Create Pull Request to Helm chart repo
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          path: evofast-frontend-chart
-          commit-message: "chore: update image tag to ${{ env.IMAGE_TAG }}"
-          title: "Update image tag to ${{ env.IMAGE_TAG }}"
-          body: |
-            This PR was automatically created by GitHub Actions after pushing a new Docker image.
-              New tag: `${{ env.IMAGE_TAG }}`
-          branch: update-image-${{ github.sha }}
-          base: develop
-          merge: true
-          merge-method: squash
+            git config user.email "ci-bot@github.com"
+            git config user.name "CI Bot"
+  
+            git commit -am "chore: update image tag to ${{ env.IMAGE_TAG }}"
+            git push origin develop
+
+      # - name: Create Pull Request to Helm chart repo
+      #   uses: peter-evans/create-pull-request@v5
+      #   with:
+      #     token: ${{ secrets.GH_TOKEN }}
+      #     path: evofast-frontend-chart
+      #     commit-message: "chore: update image tag to ${{ env.IMAGE_TAG }}"
+      #     title: "Update image tag to ${{ env.IMAGE_TAG }}"
+      #     body: |
+      #       This PR was automatically created by GitHub Actions after pushing a new Docker image.
+      #         New tag: `${{ env.IMAGE_TAG }}`
+      #     branch: update-image-${{ github.sha }}
+      #     base: main
+      #     merge: true
+      #     merge-method: squash
           
 
       # - name: Setup kubectl
