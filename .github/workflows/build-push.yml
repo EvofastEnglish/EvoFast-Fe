@@ -34,7 +34,7 @@ jobs:
       #     context: .
       #     platforms: linux/arm64
       #     push: true
-      #     tags: ${{ secrets.SOLOCODE_USERNAME }}/evofast-frontend-aks:${{ env.IMAGE_TAG }}
+      #     tags: ${{ secrets.SOLOCODE_USERNAME }}/evofast-frontend-aks:${{ env.IMAGE_TAG }} 
 
       - name: Checkout Helm chart repo
         uses: actions/checkout@v3
