@@ -9,52 +9,59 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v3
+      # -
+      #   name: Checkout
+      #   uses: actions/checkout@v3
         
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
+      #   with:
+      #     driver: docker-container
+      # -
+      #   name: Login to DockerHub
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.SOLOCODE_USERNAME }}
+      #     password: ${{ secrets.SOLOCODE_TOKEN }}
+
+      # - name: Set IMAGE_TAG
+      #   run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
+
+      # -
+      #   name: Build and push
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     context: .
+      #     platforms: linux/arm64
+      #     push: true
+      #     tags: ${{ secrets.SOLOCODE_USERNAME }}/evofast-frontend-aks:${{ env.IMAGE_TAG }}
+
+      - name: Checkout Helm chart repo
+        uses: actions/checkout@v3
         with:
-          driver: docker-container
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.SOLOCODE_USERNAME }}
-          password: ${{ secrets.SOLOCODE_TOKEN }}
+          repository: https://github.com/EvofastEnglish/evofast-frontend-chart.git
+          token: ${{ secrets.GH_TOKEN }}
+          path: helm-chart
 
-      - name: Set IMAGE_TAG
-        run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
+      # - name: Setup kubectl
+      #   uses: azure/setup-kubectl@v3
+      #   with:
+      #     version: 'latest'
 
-      -
-        name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          platforms: linux/arm64
-          push: true
-          tags: ${{ secrets.SOLOCODE_USERNAME }}/evofast-frontend-aks:${{ env.IMAGE_TAG }}
+      # - name: Setup Helm
+      #   uses: azure/setup-helm@v3
+      #   with:
+      #     version: 'latest'
 
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
+      # - name: Decode and set KUBECONFIG
+      #   run: |
+      #     mkdir -p $HOME/.kube
+      #     echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+      #     echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
 
-      - name: Setup Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: 'latest'
-
-      - name: Decode and set KUBECONFIG
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
-          echo "KUBECONFIG=$HOME/.kube/config" >> $GITHUB_ENV
-
-      - name: Helm upgrade/install
-        run: |
-          helm upgrade --install evofast-frontend ./helm-chart/evofast-frontend \
-            --set image.repository=${{ secrets.SOLOCODE_USERNAME }}/evofast-frontend-aks \
-            --set image.tag=${{ env.IMAGE_TAG }} \
-            --set image.pullPolicy=Always
+      # - name: Helm upgrade/install
+      #   run: |
+      #     helm upgrade --install evofast-frontend ./helm-chart/evofast-frontend \
+      #       --set image.repository=${{ secrets.SOLOCODE_USERNAME }}/evofast-frontend-aks \
+      #       --set image.tag=${{ env.IMAGE_TAG }} \
+      #       --set image.pullPolicy=Always
