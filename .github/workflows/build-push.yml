@@ -36,7 +36,7 @@ jobs:
       #     push: true
       #     tags: ${{ secrets.SOLOCODE_USERNAME }}/evofast-frontend-aks:${{ env.IMAGE_TAG }} 
 
-      - name: Checkout Helm chart repo 
+      - name: Checkout Helm chart repo
         uses: actions/checkout@v3
         with:
           repository: EvofastEnglish/evofast-frontend-chart
