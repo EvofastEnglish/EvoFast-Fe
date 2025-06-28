@@ -39,7 +39,7 @@ jobs:
       - name: Checkout Helm chart repo
         uses: actions/checkout@v3
         with:
-          repository: https://github.com/EvofastEnglish/evofast-frontend-chart.git
+          repository: EvofastEnglish/evofast-frontend-chart
           token: ${{ secrets.GH_TOKEN }}
           path: helm-chart
 
