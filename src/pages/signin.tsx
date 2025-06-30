@@ -97,7 +97,7 @@ const Signin: React.FC = () => {
                     color: "#fff",
                   }}
                 >
-                  {t("Login")}
+                  {t("Signin")}
                 </Button>
               </Spin>
 
