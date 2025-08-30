@@ -14,7 +14,7 @@ import {
   LABEL_SPINING,
   primaryColorButton,
 } from "@/utils/constants";
-import { generateQuestionQueue, updateSectionDescriptions } from "@/utils/helpers";
+import { generateQuestionQueue, } from "@/utils/helpers";
 import { localStorageService } from "@/utils/localstorage";
 import { Button, Input, Skeleton, Spin } from "antd";
 import dynamic from "next/dynamic";
@@ -40,21 +40,9 @@ const Home: React.FC = () => {
   const getData = useCallback(async () => {
     await dispatch(getDataAiTests()).then(({ payload }) => {
       const data = payload as AiTestResult;
-
-      const updated = {
-        ...data,
-        aiTests: {
-          ...data.aiTests,
-          data: data.aiTests.data.map(aiTest => ({
-            ...aiTest,
-            aiTestSections: updateSectionDescriptions(aiTest.aiTestSections),
-          })),
-        },
-      };
-
-      localStorageService.set<AiTestResult>(DATA_AI_TEST, updated);
+      localStorageService.set<AiTestResult>(DATA_AI_TEST, data);
       const queue = generateQuestionQueue(
-        updated?.aiTests?.data[0]?.aiTestSections ?? []
+        data?.aiTests?.data[0]?.aiTestSections ?? []
       );
       saveQueue(queue);
     });
