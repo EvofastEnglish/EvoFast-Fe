@@ -38,7 +38,7 @@ jobs:
         with:
           repository: EvofastEnglish/evofast-frontend-chart
           token: ${{ secrets.GH_TOKEN }}
-          ref: develop
+          ref: develop-k3s
           path: evofast-frontend-chart
 
       - name: Install yq
@@ -55,4 +55,4 @@ jobs:
           git config user.name "CI Bot"
 
           git commit -am "chore: update image tag to ${{ env.IMAGE_TAG }}"
-          git push origin develop
+          git push origin develop-k3s
