@@ -1,34 +1,28 @@
-# Use an official Node.js runtime as a base image
-FROM node:20.10-alpine
+# Stage 1: Dependencies
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package.json yarn.lock* pnpm-lock.yaml* ./
+RUN \ 
+    if [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
+    elif [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; \
+    else npm ci; \
+    fi
 
-# Set working directory
-WORKDIR /usr/app
+# Stage 2: Builder
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ENV NEXT_TELEMETRY_DISABLED 1
+RUN npm run build
 
-# Install PM2 globally
-RUN npm install --global pm2
+# Stage 3: Runner
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV production
+# Next.js 15 leverages standalone output for optimized production builds
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY public ./public
 
-# Copy "package.json" and "package-lock.json" before other files
-# Utilise Docker cache to save re-installing dependencies if unchanged
-COPY ./package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Change ownership to the non-root user
-RUN chown -R node:node /usr/app
-
-# Copy all files
-COPY ./ ./
-
-# Build app
-#RUN npm run build
-
-# Expose the listening port
-EXPOSE 3000
-
-# Run container as non-root (unprivileged) user
-# The "node" user is provided in the Node.js Alpine base image
-USER node
-
-# Launch app with PM2 
-CMD [ "pm2-runtime", "start", "npm", "--", "run", "dev" ]
+CMD ["node", "server.js"]
