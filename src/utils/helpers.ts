@@ -36,26 +36,6 @@ export const isExpiredTimeToken = (loginDate: string, exp: number): boolean => {
   return tokenExpiredTime > currentDate;
 };
 
-export const generateQuestionQueue = (
-  aiTestSections: AiTestSection[]
-): string[] => {
-  const queue: string[] = [];
-
-  [...aiTestSections]
-    .sort((a, b) => a.sectionOrder - b.sectionOrder)
-    .forEach((section) => {
-      const sectionId = section.id;
-      queue.push(`/part/${sectionId}`);
-
-      section.aiTestSectionQuestions.forEach((question) => {
-        queue.push(`/part/${sectionId}/question/${question.id}`);
-      });
-    });
-
-  queue.push("/final-result");
-  return queue;
-};
-
 export const findQuestionById = (
   sections: AiTestSection[],
   questionId: string
@@ -98,4 +78,76 @@ export const updateSectionDescriptions = (
         return section;
     }
   });
+};
+
+const pickCountByOrder: Record<number, number> = {
+  1: 1, // Warm-up
+  2: 3, // Q&A
+  3: 1, // Role-play
+  4: 2, // Reading aloud
+  5: 1, // Opinion
+};
+
+// random int trong [min, max]
+const randInt = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
+
+/**
+ * Chọn k chỉ số duy nhất từ [0..n-1] mà không tạo mảng chỉ số dài n.
+ * Ý tưởng: lazy-FY — dùng Map để ghi đè "swap" ảo.
+ * Time: O(k), Space: O(k).
+ */
+const sampleKIndicesLazy = (n: number, k: number): number[] => {
+  const kk = Math.min(k, n);
+  const used = new Map<number, number>(); // lưu trao đổi ảo
+  const res: number[] = [];
+
+  for (let i = 0; i < kk; i++) {
+    const r = randInt(i, n - 1);
+
+    const valR = used.has(r) ? used.get(r)! : r;
+    const valI = used.has(i) ? used.get(i)! : i;
+
+    // lấy chỉ số được "rút" ở vị trí r
+    res.push(valR);
+
+    // ghi “swap ảo”: vị trí r sau này mang giá trị của i
+    used.set(r, valI);
+  }
+  return res;
+};
+
+export const generateQuestionQueue = (
+  aiTestSections: AiTestSection[]
+): string[] => {
+  const queue: string[] = [];
+
+  [...aiTestSections]
+    .sort((a, b) => a.sectionOrder - b.sectionOrder)
+    .forEach((section) => {
+      const sectionId = section.id;
+      const questions = section.aiTestSectionQuestions || [];
+      const need = pickCountByOrder[section.sectionOrder] ?? 0;
+
+      // route vào phần
+      queue.push(`/part/${sectionId}`);
+
+      if (need <= 0 || questions.length === 0) return;
+
+      if (questions.length <= need) {
+        // đủ ít thì lấy hết (không cần random)
+        questions.forEach((q) => {
+          queue.push(`/part/${sectionId}/question/${q.id}`);
+        });
+      } else {
+        // chọn k câu ngẫu nhiên không trùng trong O(k)
+        const idxs = sampleKIndicesLazy(questions.length, need);
+        idxs.forEach((i) => {
+          queue.push(`/part/${sectionId}/question/${questions[i].id}`);
+        });
+      }
+    });
+
+  queue.push("/final-result");
+  return queue;
 };
