@@ -41,14 +41,11 @@ const Home: React.FC = () => {
     await dispatch(getDataAiTests()).then(({ payload }) => {
       const data = payload as AiTestResult;
       localStorageService.set<AiTestResult>(DATA_AI_TEST, data);
-      const queue = generateQuestionQueue(
-        data?.aiTests?.data[0]?.aiTestSections ?? []
-      );
-      saveQueue(queue);
     });
   }, [dispatch]);
 
   const startAiTest = async () => {
+    randomAndSaveQueue();
     setIsSpining(true);
     setisDisableBtn(true);
     await aiTestService
@@ -67,6 +64,23 @@ const Home: React.FC = () => {
         console.log(error);
       });
   };
+
+  const randomAndSaveQueue = () => {
+    const dataAiTests = localStorageService.get<AiTestResult>(DATA_AI_TEST, {
+      aiTests: {
+        pageIndex: 0,
+        pageSize: 0,
+        count: 0,
+        data: [],
+      },
+    });
+    if (dataAiTests.aiTests.data.length === 0) return;
+
+    const queue = generateQuestionQueue(
+      dataAiTests?.aiTests?.data[0]?.aiTestSections ?? []
+    );
+    saveQueue(queue);
+  }
 
   useEffect(() => {
     getData();
