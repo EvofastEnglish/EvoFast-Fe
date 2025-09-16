@@ -180,7 +180,7 @@ const QuestionComponent: React.FC<Props> = ({
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen md:block md:min-h-0">
+    <div className="min-h-screen">
       <div
         className="relative w-full sm:w-4/5 md:w-1/2 mx-auto mt-6 shadow pt-2"
         style={{ border: `1px solid ${borderSolidColor}` }}
