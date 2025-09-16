@@ -86,13 +86,19 @@ const QuestionComponent: React.FC<Props> = ({
 
       await recorderRef.current
         ?.start()
-        .then(() => {})
-        .catch((e) => {console.log(e);});
+        .then(() => { })
+        .catch((e) => {
+          console.log(e);
+        });
+
       setIsRecording(true);
+
       if (videoRef.current) {
         videoRef.current.currentTime = 0;
         videoRef.current.loop = true;
-        videoRef.current.play();
+        videoRef.current.play().catch(() => {
+          console.warn("Autoplay blocked, waiting for user interaction");
+        });
       }
 
       // Bắt đầu đếm ngược thời gian ghi âm
@@ -142,9 +148,9 @@ const QuestionComponent: React.FC<Props> = ({
     if (count > 0) {
       const id = setTimeout(() => setCount(count - 1), 1000);
       return () => clearTimeout(id);
-    }else{
+    } else {
       startRecording();
-    } 
+    }
   }, [count, startRecording]);
 
   // Reset khi câu hỏi thay đổi
@@ -154,7 +160,7 @@ const QuestionComponent: React.FC<Props> = ({
     setBlobURL("");
     setFileMp3(undefined);
     setTimer(questionInfor?.recordingTimeSeconds);
-    setCount(questionInfor?.thinkingTimeSeconds === 30 ? 30 :time_count_down);
+    setCount(questionInfor?.thinkingTimeSeconds === 30 ? 30 : time_count_down);
     setIsSpining(false);
 
     if (intervalRef.current) {
@@ -174,16 +180,20 @@ const QuestionComponent: React.FC<Props> = ({
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col justify-center items-center min-h-screen md:block md:min-h-0">
       <div
-        className="relative w-4/5 md:w-1/2 inset-0 m-auto mt-[5%] shadow pt-2"
+        className="relative w-full sm:w-4/5 md:w-1/2 mx-auto mt-6 shadow pt-2"
         style={{ border: `1px solid ${borderSolidColor}` }}
       >
         <Spin tip={LABEL_SPINING} spinning={isSpining}>
           <Skeleton loading={questionInfor === undefined}>
             <div className="text-center">
-             <span className="text-5xl" 
-             style={{color: `${(count === 0) ? '#fff' : '#000'}`}}>{count}</span> 
+              <span
+                className="text-5xl"
+                style={{ color: `${count === 0 ? "#fff" : "#000"}` }}
+              >
+                {count}
+              </span>
             </div>
 
             <div className="p-2.5">
@@ -193,7 +203,12 @@ const QuestionComponent: React.FC<Props> = ({
                 value={questionInfor?.description}
                 variant="borderless"
                 readOnly
-                style={{ resize: "none", color: "#000", textAlign: "center", fontSize: '18px' }}
+                style={{
+                  resize: "none",
+                  color: "#000",
+                  textAlign: "start",
+                  fontSize: "18px",
+                }}
               />
             </div>
 
@@ -207,15 +222,15 @@ const QuestionComponent: React.FC<Props> = ({
         </Spin>
       </div>
 
-      <div className="relative w-4/5 md:w-1/2 inset-0 m-auto font-japaneseSans text-end mt-5">
+      <div className="relative w-full sm:w-4/5 md:w-1/2 mx-auto font-japaneseSans text-end mt-5">
         <Button
           disabled={isDisable}
           style={{
-            backgroundColor:isDisable ? disableColorBtn : primaryColorButton,
+            backgroundColor: isDisable ? disableColorBtn : primaryColorButton,
             color: "#fff",
-            height: '40px',
-            width: '100px',
-            fontSize:'17px'
+            height: "40px",
+            width: "100px",
+            fontSize: "17px",
           }}
           onClick={handleSubmitTest}
         >
