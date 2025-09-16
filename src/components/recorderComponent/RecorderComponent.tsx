@@ -32,14 +32,15 @@ const RecorderComponent: React.FC<Props> = (prop) => {
 
   return (
     <div className="p-4">
-      <div className="flex justify-between">
-        <div className="w-[80%] h-16">
+      <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-3">
+        <div className="w-full sm:w-4/5">
           <video
             ref={videoRef}
             src="/video/animation_recording.mp4"
             muted
-            className="w-full h-16 object-cover mb-4"
+            className="w-full max-h-5 sm:max-h-5 object-cover mb-4"
             preload="auto"
+            playsInline
           />
         </div>
         <div className="flex items-center">
