@@ -92,7 +92,7 @@ const Part: React.FC<Props> = (props) => {
             </Skeleton>
           </Spin>
 
-           <div className="relative w-4/5 md:w-1/2 inset-0 m-auto font-japaneseSans text-end mt-5">
+          <div className="relative w-9/10 md:w-1/2 inset-0 m-auto font-japaneseSans text-end mt-5">
             <Button
               disabled={isSpining}
               style={{
@@ -100,7 +100,7 @@ const Part: React.FC<Props> = (props) => {
                 color: "#fff",
                 height: '40px',
                 width: '150px',
-                fontSize:'17px'
+                fontSize: '17px'
               }}
               onClick={() => startAITestSection()}
             >

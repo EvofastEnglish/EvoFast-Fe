@@ -13,7 +13,7 @@ const PartIntroduction: React.FC<Props> = (prop) => {
   const { content } = prop;
   return (
     <div
-      className="relative shadow w-4/5 md:w-1/2 inset-0 m-auto min-h-[400px] flex items-center"
+      className="relative shadow w-9/10 md:w-1/2 inset-0 m-auto min-h-[400px] flex items-center"
       style={{ border: `1px solid ${borderSolidColor}` }}
     >
       <TextArea
@@ -21,7 +21,7 @@ const PartIntroduction: React.FC<Props> = (prop) => {
         value={content}
         variant="borderless"
         readOnly
-        style={{ resize: "none", color: "#000", textAlign: "center", fontSize: '18px', lineHeight:'1.6' }}
+        style={{ resize: "none", color: "#000", textAlign: "center", fontSize: '18px', lineHeight: '1.6' }}
       />
     </div>
   );
