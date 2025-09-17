@@ -1,5 +1,5 @@
 import { Layout, theme } from "antd";
-import { Content, Header } from "antd/es/layout/layout";
+import { Content } from "antd/es/layout/layout";
 import { ReactNode } from "react";
 
 interface Props {
@@ -19,11 +19,11 @@ const BasicLayout: React.FC<Props> = (prop) => {
   // };
   return (
     <Layout className="h-screen flex">
-      <Header
+      {/* <Header
         style={{ background: "#fff" }}
         className="flex justify-between items-center"
-      >
-        {/* <div className="flex items-center h-16">
+      > */}
+      {/* <div className="flex items-center h-16">
           <img
             src="/images/logo.png"
             className="max-h-16 object-contain mr-3 cursor-pointer"
@@ -39,11 +39,12 @@ const BasicLayout: React.FC<Props> = (prop) => {
         >
           {t("Logout")}
         </Button> */}
-      </Header>
+      {/* </Header> */}
       <Content
         style={{ background: colorBgContainer }}
         className="flex-1 overflow-auto"
       >
+        <div className="bg-white h-20 md:h-15"></div>
         <div>{content}</div>
       </Content>
       {/* <Footer className="flex justify-center">Footer</Footer> */}
