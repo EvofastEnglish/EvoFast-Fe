@@ -197,19 +197,30 @@ const QuestionComponent: React.FC<Props> = ({
             </div>
 
             <div className="p-2.5">
-              <TextArea
-                minLength={5}
-                autoSize={true}
-                value={questionInfor?.description}
-                variant="borderless"
-                readOnly
-                style={{
-                  resize: "none",
-                  color: "#000",
-                  textAlign: "start",
-                  fontSize: "18px",
-                }}
-              />
+              {questionInfor?.description
+                ?.split(/\n+/) // tách theo 1 hoặc nhiều \n
+                .map((block, idx) => {
+                  if (!block.trim()) return null; // bỏ dòng trống
+                  const isJapanese = /[\u3000-\u30FF\u4E00-\u9FFF]/.test(block);
+                  return (
+                    <TextArea
+                      key={idx}
+                      minLength={5}
+                      autoSize={true}
+                      value={block}
+                      variant="borderless"
+                      readOnly
+                      style={{
+                        resize: "none",
+                        color: "#000",
+                        textAlign: "start",
+                        fontSize: isJapanese ? "14px" : "19px",
+                        lineHeight: "1.6",
+                        marginBottom: "8px", // tạo khoảng cách giữa các block
+                      }}
+                    />
+                  );
+                })}
             </div>
 
             <RecorderComponent
