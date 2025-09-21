@@ -46,7 +46,7 @@ const FinalResult: React.FC = () => {
       content={
         <div>
           <div
-            className="relative shadow w-4/5 md:w-1/2 inset-0 m-auto font-japaneseSans min-h-[400px] flex items-center flex-wrap"
+            className="relative shadow w-9/10 md:w-1/2 inset-0 m-auto font-japaneseSans min-h-[400px] flex items-center flex-wrap"
             style={{ border: `1px solid ${borderSolidColor}` }}
           >
             <TextArea
