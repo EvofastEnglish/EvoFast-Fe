@@ -13,7 +13,7 @@ import {
   time_count_down,
 } from "@/utils/constants";
 import { localStorageService } from "@/utils/localstorage";
-import { Button, Input, Skeleton, Spin } from "antd";
+import { Button, Skeleton, Spin } from "antd";
 import MicRecorder from "mic-recorder-to-mp3";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -23,8 +23,6 @@ interface Props {
   partId: string;
   questionInfor: AiTestSectionQuestions;
 }
-
-const { TextArea } = Input;
 
 const QuestionComponent: React.FC<Props> = ({
   questionId,
@@ -198,30 +196,33 @@ const QuestionComponent: React.FC<Props> = ({
 
             <div className="p-2.5">
               {questionInfor?.description
-                ?.split(/\n+/) // tách theo 1 hoặc nhiều \n
-                .map((block, idx) => {
+                ?.split(/\n+/) // tách block theo 1 hoặc nhiều \n
+                .map((block, idx, arr) => {
                   if (!block.trim()) return null; // bỏ dòng trống
+
                   const isJapanese = /[\u3000-\u30FF\u4E00-\u9FFF]/.test(block);
+                  const nextBlock = arr[idx + 1] || "";
+                  const nextIsJapanese = /[\u3000-\u30FF\u4E00-\u9FFF]/.test(nextBlock);
+
+                  const isEndOfEnglishParagraph = !isJapanese && nextIsJapanese;
+
                   return (
-                    <TextArea
+                    <span
                       key={idx}
-                      minLength={5}
-                      autoSize={true}
-                      value={block}
-                      variant="borderless"
-                      readOnly
                       style={{
-                        resize: "none",
+                        display: "block", // mỗi block xuống dòng
                         color: "#000",
                         textAlign: "start",
                         fontSize: isJapanese ? "14px" : "19px",
-                        lineHeight: "1.6",
-                        marginBottom: "8px", // tạo khoảng cách giữa các block
+                        marginBottom: isEndOfEnglishParagraph ? "25px" : "0px",
                       }}
-                    />
+                    >
+                      {block}
+                    </span>
                   );
                 })}
             </div>
+
 
             <RecorderComponent
               isRecording={isRecording}
