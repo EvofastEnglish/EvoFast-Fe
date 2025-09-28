@@ -31,7 +31,7 @@ export const parseJWT = (token: string): DecodedToken | null => {
 };
 
 export const isExpiredTimeToken = (loginDate: string, exp: number): boolean => {
-  const tokenExpiredTime = moment(loginDate).add(exp, "minute").toDate();
+  const tokenExpiredTime = moment(loginDate).add(exp, "second").toDate();
   const currentDate = moment().toDate();
   return tokenExpiredTime > currentDate;
 };
