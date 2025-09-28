@@ -1,6 +1,5 @@
 import { DefaultJWT, getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse, URLPattern } from "next/server";
-import { isExpiredTimeToken } from "./utils/helpers";
 
 interface RouteRule {
   pattern: URLPattern;
@@ -27,17 +26,16 @@ export async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   })) as DefaultJWT;
 
-  const isValidToken =
-    token && isExpiredTimeToken(token.loginDate, token.expiresIn);
-
+  // const isValidToken =
+  //   token && isExpiredTimeToken(token.loginDate, token.expiresIn);
   // Redirect từ /signin nếu đã login
-  if (pathname === "/signin" && isValidToken) {
+  if (pathname === "/signin" && token) {
     return NextResponse.redirect(new URL("/", origin));
   }
 
   // Redirect từ "/" đến trang phù hợp theo role
   if (pathname === "/") {
-    if (!isValidToken)
+    if (!token)
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
     const redirectPath = "/home";
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL}${redirectPath}`);
@@ -49,7 +47,7 @@ export async function middleware(req: NextRequest) {
   );
 
   if (matchedRoute) {
-    if (!isValidToken)
+    if (!token)
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
   }
 
