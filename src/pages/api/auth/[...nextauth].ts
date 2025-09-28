@@ -39,7 +39,7 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, trigger, session, user }) {
+    async jwt({ token, user }) {
       if (user) {
         token.access_token = user.access_token;
         token.roles = user.roles;
@@ -48,17 +48,22 @@ export default NextAuth({
         token.loginDate = user.loginDate;
         token.refresh_token = user.refresh_token;
       }
-      if (trigger === "update" && session) {
-        return { ...token, ...session?.user };
-      }
+      // if (trigger === "update" && session) {
+      //   return { ...token, ...session?.user };
+      // }
 
       const loginDate = moment(token.loginDate);
       const expireAt = loginDate.clone().add(token.expiresIn, "seconds");
       const expired = expireAt.isBefore(moment());
 
+      console.log(`loginDate value: ${loginDate}`);
+      console.log(`expireAt value: ${expireAt}`);
+
       if (expired) {
+        console.log(`Start refresh token ${expired}`);
         return await refreshAccessToken(token);
       }
+      console.log(`token hiện tại ${JSON.stringify(token, null, 2)}`);
 
       return token;
     },
@@ -83,6 +88,8 @@ async function refreshAccessToken(token: JWT) {
   try {
     const response = await authService.refreshToken(token.refresh_token);
     const result = parseJWT(response.access_token);
+    console.log(`refresh thành công ${JSON.stringify(response, null, 2)}`);
+
     return {
       ...token,
       access_token: response.access_token,

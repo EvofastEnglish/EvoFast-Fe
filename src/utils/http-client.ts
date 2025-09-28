@@ -1,8 +1,6 @@
 import axios, { AxiosResponse, ResponseType } from "axios";
-import { getSession, signOut } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import apiLinks from "./api-links";
-import authService from "@/services/user";
-import { parseJWT } from "./helpers";
 
 interface Options {
   url: ((al: typeof apiLinks) => string) | string;
@@ -101,79 +99,79 @@ const postMultipart = async <T = unknown>({
   });
 };
 
-let isRefreshing = false;
-let requestQueue: ((token: string) => void)[] = [];
+// let isRefreshing = false;
+// let requestQueue: ((token: string) => void)[] = [];
 
-axios.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-    // 🧠 Chỉ xử lý nếu bị CORS (không có response trả về)
-    if (!error.response) {
-      // Nếu đã retry rồi → logout luôn
-      if (originalRequest._retry) {
-        await signOut({ callbackUrl: "/signin" });
-        return Promise.reject(error);
-      }
+// axios.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+//     // 🧠 Chỉ xử lý nếu bị CORS (không có response trả về)
+//     if (!error.response) {
+//       // Nếu đã retry rồi → logout luôn
+//       if (originalRequest._retry) {
+//         await signOut({ callbackUrl: "/signin" });
+//         return Promise.reject(error);
+//       }
 
-      originalRequest._retry = true;
+//       originalRequest._retry = true;
 
-      // Nếu đang refresh → xếp request vào hàng đợi
-      if (isRefreshing) {
-        return new Promise((resolve) => {
-          requestQueue.push((newToken: string) => {
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            resolve(axios(originalRequest));
-          });
-        });
-      }
+//       // Nếu đang refresh → xếp request vào hàng đợi
+//       if (isRefreshing) {
+//         return new Promise((resolve) => {
+//           requestQueue.push((newToken: string) => {
+//             originalRequest.headers.Authorization = `Bearer ${newToken}`;
+//             resolve(axios(originalRequest));
+//           });
+//         });
+//       }
 
-      isRefreshing = true;
-      const session = await getSession();
-      const refresh_token = session?.user?.refresh_token;
-      try {
-        if (!refresh_token) throw new Error("No refresh token");
+//       isRefreshing = true;
+//       const session = await getSession();
+//       const refresh_token = session?.user?.refresh_token;
+//       try {
+//         if (!refresh_token) throw new Error("No refresh token");
 
-        const newTokenData = await authService.refreshToken(refresh_token);
-        const result = parseJWT(newTokenData.access_token);
+//         const newTokenData = await authService.refreshToken(refresh_token);
+//         const result = parseJWT(newTokenData.access_token);
 
-        // Cập nhật session
-        await fetch("/api/session/update-session", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user: {
-              access_token: newTokenData.access_token,
-              refresh_token: newTokenData.refresh_token,
-              expiresIn: newTokenData.expires_in,
-              loginDate: new Date().toISOString(),
-              roles: result?.role ?? "",
-              userId: result?.sub ?? "",
-            },
-          }),
-        });
+//         // Cập nhật session
+//         await fetch("/api/session/update-session", {
+//           method: "POST",
+//           headers: { "Content-Type": "application/json" },
+//           body: JSON.stringify({
+//             user: {
+//               access_token: newTokenData.access_token,
+//               refresh_token: newTokenData.refresh_token,
+//               expiresIn: newTokenData.expires_in,
+//               loginDate: new Date().toISOString(),
+//               roles: result?.role ?? "",
+//               userId: result?.sub ?? "",
+//             },
+//           }),
+//         });
 
-        // Gọi lại các request đang chờ
-        requestQueue.forEach((cb) => cb(newTokenData.access_token));
-        requestQueue = [];
+//         // Gọi lại các request đang chờ
+//         requestQueue.forEach((cb) => cb(newTokenData.access_token));
+//         requestQueue = [];
 
-        // Gọi lại request gốc
-        originalRequest.headers.Authorization = `Bearer ${newTokenData.access_token}`;
-        return axios(originalRequest);
-      } catch (err) {
-        requestQueue = [];
-        await signOut({ callbackUrl: "/signin" });
-        await authService.removeToken(refresh_token!);
-        return Promise.reject(err);
-      } finally {
-        isRefreshing = false;
-      }
-    }
+//         // Gọi lại request gốc
+//         originalRequest.headers.Authorization = `Bearer ${newTokenData.access_token}`;
+//         return axios(originalRequest);
+//       } catch (err) {
+//         requestQueue = [];
+//         await signOut({ callbackUrl: "/signin" });
+//         await authService.removeToken(refresh_token!);
+//         return Promise.reject(err);
+//       } finally {
+//         isRefreshing = false;
+//       }
+//     }
 
-    // Với các lỗi khác (có response) → không xử lý gì
-    return Promise.reject(error);
-  }
-);
+//     // Với các lỗi khác (có response) → không xử lý gì
+//     return Promise.reject(error);
+//   }
+// );
 
 const httpClient = {
   request,
