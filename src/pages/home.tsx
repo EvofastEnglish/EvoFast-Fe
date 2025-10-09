@@ -13,6 +13,7 @@ import {
   DATA_AI_TEST,
   LABEL_SPINING,
   primaryColorButton,
+  version_app,
 } from "@/utils/constants";
 import { generateQuestionQueue, } from "@/utils/helpers";
 import { localStorageService } from "@/utils/localstorage";
@@ -38,6 +39,7 @@ const Home: React.FC = () => {
   );
 
   const getData = useCallback(async () => {
+    localStorageService.set<string>(version_app, "1.0.2");
     await dispatch(getDataAiTests()).then(({ payload }) => {
       const data = payload as AiTestResult;
       localStorageService.set<AiTestResult>(DATA_AI_TEST, data);

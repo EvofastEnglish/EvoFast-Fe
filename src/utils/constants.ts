@@ -11,4 +11,4 @@ export const DATA_AI_TEST = "dataAiTest";
 export const LABEL_FINISH_ANSWER_QUESTION = "次へ";
 export const disableColorBtn = "#BDBDBD";
 export const time_count_down = 5;
-export const version_app = "1.0.1";
+export const version_app = "VERSION_APP:";
