@@ -1,5 +1,5 @@
-const urlIdentityServer = "https://evofast-identityserver-dev.solocode.click";
-const baseUrl = "https://evofastapi-dev.solocode.click";
+const urlIdentityServer = "https://evofast-identityserver-live.solocode.click";
+const baseUrl = "https://evofastapi-live.solocode.click";
 
 const apiLinks = {
   user: {
