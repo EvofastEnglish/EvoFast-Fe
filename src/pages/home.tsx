@@ -15,7 +15,7 @@ import {
   primaryColorButton,
   version_app,
 } from "@/utils/constants";
-import { generateQuestionQueue, } from "@/utils/helpers";
+import { generateQuestionQueue } from "@/utils/helpers";
 import { localStorageService } from "@/utils/localstorage";
 import { Button, Input, Skeleton, Spin } from "antd";
 import dynamic from "next/dynamic";
@@ -39,7 +39,7 @@ const Home: React.FC = () => {
   );
 
   const getData = useCallback(async () => {
-    localStorageService.set<string>(version_app, "1.0.4");
+    localStorageService.set<string>(version_app, "1.0.5");
     await dispatch(getDataAiTests()).then(({ payload }) => {
       const data = payload as AiTestResult;
       localStorageService.set<AiTestResult>(DATA_AI_TEST, data);
@@ -82,7 +82,7 @@ const Home: React.FC = () => {
       dataAiTests?.aiTests?.data[0]?.aiTestSections ?? []
     );
     saveQueue(queue);
-  }
+  };
 
   useEffect(() => {
     getData();
