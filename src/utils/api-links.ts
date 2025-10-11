@@ -1,4 +1,4 @@
-const urlIdentityServer = "https://identityserver.solocode.click";
+const urlIdentityServer = "https://identityserver.evofast-app.com";
 const baseUrl = "https://evofastapi.evofast-app.com";
 
 const apiLinks = {
