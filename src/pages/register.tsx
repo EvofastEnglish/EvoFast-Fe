@@ -67,11 +67,11 @@ const Register: React.FC = () => {
 
                     <Form.Item
                         name="firstName"
-                        label={t("FirstName")}
+                        label={t("First name")}
                         rules={[
                             {
                                 required: true,
-                                message: t("Please input your firstName!"),
+                                message: t("Please input your firstName"),
                             }
                         ]}
                     >
@@ -81,11 +81,11 @@ const Register: React.FC = () => {
 
                     <Form.Item
                         name="lastName"
-                        label={t("LastName")}
+                        label={t("Last name")}
                         rules={[
                             {
                                 required: true,
-                                message: t("Please input your lastName!"),
+                                message: t("Please input your lastName"),
                             }
                         ]}
                     >
@@ -95,15 +95,15 @@ const Register: React.FC = () => {
 
                     <Form.Item
                         name="username"
-                        label={t("Username")}
+                        label={t("User name")}
                         rules={[
                             {
                                 required: true,
-                                message: t("Please input your username!"),
+                                message: t("Please input your username"),
                             }
                         ]}
                     >
-                        <Input placeholder={t("Username")}
+                        <Input placeholder={t("User name")}
                         />
                     </Form.Item>
 
@@ -118,7 +118,7 @@ const Register: React.FC = () => {
                             {
                                 pattern: passwordPattern,
                                 message: t(
-                                    "Password must be at least 6 characters and include uppercase, lowercase, number, and special character!"
+                                    "alert_format_value"
                                 ),
                             },
                         ]}
@@ -139,7 +139,7 @@ const Register: React.FC = () => {
                         rules={[
                             {
                                 required: true,
-                                message: t("Please confirm your password!"),
+                                message: t("Please confirm your password"),
                             },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
@@ -147,7 +147,7 @@ const Register: React.FC = () => {
                                         return Promise.resolve();
                                     }
                                     return Promise.reject(
-                                        new Error(t("The two passwords do not match!"))
+                                        new Error(t("The two passwords do not match"))
                                     );
                                 },
                             }),
@@ -176,12 +176,12 @@ const Register: React.FC = () => {
                     </Form.Item>
 
                     <div className="text-center text-sm mt-3">
-                        {t("Already have an account?")}{" "}
+                        {t("Already have an account")}{" "}
                         <a
                             onClick={() => router.push("/signin")}
                             className="text-blue-600 hover:underline cursor-pointer"
                         >
-                            {t("Login now!")}
+                            {t("Login now")}
                         </a>
                     </div>
                 </Form>

@@ -8,5 +8,20 @@
   "Password": "パスワード",
   "Login successful!": "ログインが成功しました！",
   "Logout": "ログアウト",
-  "Please input your password!": "有効なパスワードを入力してください!"
+  "Please input your password!": "有効なパスワードを入力してください!",
+  "First name": "名（めい）",
+  "Please input your firstName": "名を入力してください!",
+  "Last name": "姓（せい）",
+  "Please input your lastName": "姓を入力してください!",
+  "User name": "ユーザー名",
+  "Please input your username": "ユーザー名を入力してください!",
+  "Password (e.g. P@ssword123)": "パスワード 例：P@ssword123",
+  "alert_format_value": "パスワードは6文字以上で、大文字・小文字・数字・記号を含めてください。",
+  "Confirm Password": "パスワード（の）確認",
+  "Please confirm your password": "パスワードを確認してください!",
+  "The two passwords do not match": "パスワードが一致しません!",
+  "Re-enter your password": "パスワードを再入力してください。",
+  "Register": "登録（とうろく）",
+  "Already have an account": "すでにアカウントをお持ちですか？",
+  "Login now": "今すぐログイン!"
 }
