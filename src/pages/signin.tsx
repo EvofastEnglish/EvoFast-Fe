@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import {
@@ -101,10 +102,10 @@ const Signin: React.FC = () => {
                 </Button>
               </Spin>
 
-              {/* {t("or")}{" "}
+              {t("or")}{" "}
               <a onClick={() => router.push("/register")}>
                 {t("Register now!")}
-              </a> */}
+              </a>
             </Form.Item>
           </Form>
         </div>

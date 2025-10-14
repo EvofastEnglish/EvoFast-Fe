@@ -1,4 +1,8 @@
-import { LoginResponse } from "@/model/user";
+import {
+  LoginResponse,
+  RegisterFormValues,
+  RegisterResponse,
+} from "@/model/user";
 import apiLinks from "@/utils/api-links";
 import httpClient from "@/utils/http-client";
 
@@ -44,10 +48,21 @@ const removeToken = async (refreshToken: string): Promise<LoginResponse> => {
   return response.data;
 };
 
+const register = async (
+  registerFormValues: RegisterFormValues
+): Promise<RegisterResponse> => {
+  const response = await httpClient.post<RegisterResponse>({
+    url: apiLinks.user.register,
+    data: registerFormValues,
+  });
+  return response.data;
+};
+
 const authService = {
   login,
   refreshToken,
   removeToken,
+  register,
 };
 
 export default authService;

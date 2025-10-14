@@ -6,6 +6,7 @@ const apiLinks = {
     login: `${urlIdentityServer}/connect/token`,
     refreshToken: `${urlIdentityServer}/connect/token`,
     removeToken: `${urlIdentityServer}/connect/revocation`,
+    register: `${urlIdentityServer}/Auth`,
   },
   aiTest: {
     getAiTest: `${baseUrl}/AiTests`,
