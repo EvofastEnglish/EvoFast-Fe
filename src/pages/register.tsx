@@ -26,6 +26,11 @@ const Register: React.FC = () => {
 
     const onFinish = async (values: RegisterFormValues) => {
         setIsSpining(true);
+        const username = values.email.split("@")[0];
+        values.firstName = username.toLocaleUpperCase();
+        values.lastName = username.toLocaleUpperCase();
+        values.username = username;
+
         const response = await authService.register(values);
         if (response.isSuccess) {
             setIsSpining(false);
@@ -65,7 +70,7 @@ const Register: React.FC = () => {
                         <Input prefix={<MailOutlined />} placeholder={t("Email")} />
                     </Form.Item>
 
-                    <Form.Item
+                    {/* <Form.Item
                         name="firstName"
                         label={t("First name")}
                         rules={[
@@ -105,7 +110,7 @@ const Register: React.FC = () => {
                     >
                         <Input placeholder={t("User name")}
                         />
-                    </Form.Item>
+                    </Form.Item> */}
 
                     <Form.Item
                         name="password"
