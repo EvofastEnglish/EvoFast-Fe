@@ -101,12 +101,13 @@ const Signin: React.FC = () => {
                   {t("Login")}
                 </Button>
               </Spin>
-
+            </Form.Item>
+            <div className="text-start text-sm mt-3">
               {t("or")}{" "}
               <a onClick={() => router.push("/register")}>
                 {t("Register now!")}
               </a>
-            </Form.Item>
+            </div>
           </Form>
         </div>
       </div>
