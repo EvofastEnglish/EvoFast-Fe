@@ -35,10 +35,10 @@ const Register: React.FC = () => {
         if (response.isSuccess) {
             setIsSpining(false);
             form.resetFields();
-            return message.success(t("Registration successful!"));
+            return message.success(t("Registration successful"));
         } else {
             setIsSpining(false);
-            return message.success(t("Registration error!"));
+            return message.success(t("Registration error"));
         }
     };
 

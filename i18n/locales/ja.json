@@ -23,5 +23,7 @@
   "Re-enter your password": "パスワードを再入力してください。",
   "Register": "登録（とうろく）",
   "Already have an account": "すでにアカウントをお持ちですか？",
-  "Login now": "今すぐログイン!"
+  "Login now": "今すぐログイン!",
+  "Registration successful": "登録が完了しました!",
+  "Registration error": "登録エラー!"
 }

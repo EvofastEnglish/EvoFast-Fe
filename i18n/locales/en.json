@@ -23,5 +23,7 @@
   "Re-enter your password": "Re-enter your password",
   "Register": "Register",
   "Already have an account": "Already have an account?",
-  "Login now": "Login now!"
+  "Login now": "Login now!",
+  "Registration successful": "Registration successful!",
+  "Registration error": "Registration error!"
 }

@@ -60,7 +60,7 @@ export default NextAuth({
         // console.log(`Start refresh token ${expired}`);
         return await refreshAccessToken(token);
       }
-      console.log(`token hiện tại ${JSON.stringify(token, null, 2)}`);
+      // console.log(`token hiện tại ${JSON.stringify(token, null, 2)}`);
 
       return token;
     },
