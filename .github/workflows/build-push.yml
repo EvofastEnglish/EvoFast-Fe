@@ -3,7 +3,7 @@ name: Build-Push Docker Image
 on:
   push:
     branches:
-      - "production"
+      - "sandbox"
 
 jobs:
   docker:
@@ -38,7 +38,7 @@ jobs:
         with:
           repository: EvofastEnglish/evofast-frontend-chart
           token: ${{ secrets.GH_TOKEN }}
-          ref: production
+          ref: sandbox
           path: evofast-frontend-chart
 
       - name: Install yq
@@ -55,4 +55,4 @@ jobs:
           git config user.name "CI Bot"
 
           git commit -am "chore: update image tag to ${{ env.IMAGE_TAG }}"
-          git push origin production
+          git push origin sandbox
