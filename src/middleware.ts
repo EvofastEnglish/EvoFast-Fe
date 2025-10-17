@@ -1,6 +1,6 @@
 import { DefaultJWT, getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse, URLPattern } from "next/server";
-import { isExpiredTimeToken } from "./utils/helpers";
+import { REFRESH_TOKEN_ERROR } from "./utils/constants";
 
 interface RouteRule {
   pattern: URLPattern;
@@ -20,21 +20,30 @@ const protectedRoutes: RouteRule[] = [
 ];
 
 export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  const { pathname, origin } = req.nextUrl;
 
   const token = (await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
   })) as DefaultJWT;
 
-  const isValidToken =
-    token && isExpiredTimeToken(token?.loginDate, token?.expiresIn);
-  // Redirect từ /signin nếu đã login
-  // if (pathname === "/signin" && isValidToken) {
-  //   return NextResponse.redirect(new URL("/", origin));
-  // }
+  const isValidToken = token;
+  console.log(`==> MIDDLEWARE_ERROR__${token?.error}`);
 
-  // Redirect từ "/" đến trang phù hợp theo role
+  if (token?.error === REFRESH_TOKEN_ERROR) {
+    const res = NextResponse.redirect(`${origin}/signin`);
+    res.cookies.delete("next-auth.session-token");
+    res.cookies.delete("__Secure-next-auth.session-token");
+    return res;
+  }
+
+  if (
+    (pathname === "/signin" && isValidToken) ||
+    (pathname === "/register" && isValidToken)
+  ) {
+    return NextResponse.redirect(new URL("/", origin));
+  }
+
   if (pathname === "/") {
     if (!isValidToken)
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/signin`);
@@ -42,7 +51,6 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL}${redirectPath}`);
   }
 
-  // Kiểm tra các route bảo vệ
   const matchedRoute = protectedRoutes.find((rule) =>
     rule.pattern.test({ pathname })
   );
@@ -56,5 +64,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|favicon.ico|public|api/auth).*)"], // tránh apply middleware cho static files
+  matcher: ["/((?!_next|favicon.ico|public|api/auth).*)"],
 };

@@ -4,6 +4,7 @@ declare module "next-auth" {
   //CUSTOM MODEL SESSION
   interface Session {
     expires: Date;
+    error: string;
     user: {
       access_token: string;
       tokenType: string;
@@ -38,5 +39,6 @@ declare module "next-auth/jwt" {
     loginDate: string;
     roles: string;
     refresh_token: string;
+    error?: string;
   }
 }

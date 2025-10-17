@@ -1,4 +1,5 @@
 import authService from "@/services/user";
+import { REFRESH_TOKEN_ERROR } from "@/utils/constants";
 import { parseJWT } from "@/utils/helpers";
 import moment from "moment";
 import NextAuth, { User } from "next-auth";
@@ -53,19 +54,28 @@ export default NextAuth({
       const expireAt = loginDate.clone().add(token.expiresIn, "seconds");
       const expired = expireAt.isBefore(moment());
 
-      // console.log(`loginDate value: ${loginDate}`);
-      // console.log(`expireAt value: ${expireAt}`);
+      console.log(`==> ExpireAt value ${expireAt}`);
+      console.log(`==> Check expired _ ${expired}`);
 
       if (expired) {
-        // console.log(`Start refresh token ${expired}`);
-        return await refreshAccessToken(token);
+        const refreshed = await refreshAccessToken(token);
+        return refreshed;
       }
-      // console.log(`token hiện tại ${JSON.stringify(token, null, 2)}`);
 
       return token;
     },
     async session({ session, token }) {
       if (session) {
+        console.log(
+          `==> Refresh done and update session ${JSON.stringify(
+            token,
+            null,
+            2
+          )}`
+        );
+        if (token?.error === REFRESH_TOKEN_ERROR) {
+          session.error = REFRESH_TOKEN_ERROR;
+        }
         session.expires = moment().add(token.expiresIn, "seconds").toDate();
         session.user.access_token = token.access_token;
         session.user.roles = token.roles;
@@ -85,8 +95,6 @@ async function refreshAccessToken(token: JWT) {
   try {
     const response = await authService.refreshToken(token.refresh_token);
     const result = parseJWT(response.access_token);
-    // console.log(`refresh thành công ${JSON.stringify(response, null, 2)}`);
-
     return {
       ...token,
       access_token: response.access_token,
@@ -97,10 +105,10 @@ async function refreshAccessToken(token: JWT) {
       userId: result?.sub ?? "",
     };
   } catch (error) {
-    console.error("Lỗi khi refresh token:", error);
+    console.error("==> ERROR when refresh token:", error);
     return {
       ...token,
-      error: "RefreshAccessTokenError",
+      error: REFRESH_TOKEN_ERROR,
     };
   }
 }

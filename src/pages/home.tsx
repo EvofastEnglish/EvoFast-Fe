@@ -39,7 +39,7 @@ const Home: React.FC = () => {
   );
 
   const getData = useCallback(async () => {
-    localStorageService.set<string>(version_app, "1.1.0");
+    localStorageService.set<string>(version_app, "1.2.0");
     await dispatch(getDataAiTests()).then(({ payload }) => {
       const data = payload as AiTestResult;
       localStorageService.set<AiTestResult>(DATA_AI_TEST, data);

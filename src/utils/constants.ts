@@ -12,3 +12,4 @@ export const LABEL_FINISH_ANSWER_QUESTION = "次へ";
 export const disableColorBtn = "#BDBDBD";
 export const time_count_down = 5;
 export const version_app = "VERSION_APP:";
+export const REFRESH_TOKEN_ERROR = "RefreshAccessTokenError";
