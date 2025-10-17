@@ -10,6 +10,7 @@ import {
 } from "@/utils/constants";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { App as AntdApp, Button, Form, Input, Spin } from "antd";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -33,14 +34,30 @@ const Register: React.FC = () => {
 
         const response = await authService.register(values);
         if (response.isSuccess) {
-            setIsSpining(false);
             form.resetFields();
-            return message.success(t("Registration successful"));
+            message.success(t("Registration successful"));
+            await autoLogin(values.email, values.password);
         } else {
             setIsSpining(false);
-            return message.success(t("Registration error"));
+            message.success(t("Registration error"));
         }
     };
+
+    const autoLogin = async (email: string, password: string) => {
+        const res = await signIn("credentials", {
+            redirect: false,
+            username: email,
+            password: password,
+        });
+
+        if (res?.error) {
+            setIsSpining(false);
+            return message.error(res?.error);
+        } else {
+            setIsSpining(false);
+            return router.push("/");
+        }
+    }
 
     return (
         <div className="flex items-center justify-center min-h-screen">
