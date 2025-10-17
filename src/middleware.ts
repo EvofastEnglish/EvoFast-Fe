@@ -20,7 +20,7 @@ const protectedRoutes: RouteRule[] = [
 ];
 
 export async function middleware(req: NextRequest) {
-  const { pathname, origin } = req.nextUrl;
+  const { pathname } = req.nextUrl;
 
   const token = (await getToken({
     req,
@@ -28,11 +28,11 @@ export async function middleware(req: NextRequest) {
   })) as DefaultJWT;
 
   const isValidToken =
-    token && isExpiredTimeToken(token.loginDate, token.expiresIn);
+    token && isExpiredTimeToken(token?.loginDate, token?.expiresIn);
   // Redirect từ /signin nếu đã login
-  if (pathname === "/signin" && isValidToken) {
-    return NextResponse.redirect(new URL("/", origin));
-  }
+  // if (pathname === "/signin" && isValidToken) {
+  //   return NextResponse.redirect(new URL("/", origin));
+  // }
 
   // Redirect từ "/" đến trang phù hợp theo role
   if (pathname === "/") {
