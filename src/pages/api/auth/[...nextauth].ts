@@ -51,7 +51,8 @@ export default NextAuth({
       }
 
       const loginDate = moment(token.loginDate);
-      const expireAt = loginDate.clone().add(token.expiresIn, "seconds");
+      // const expireAt = loginDate.clone().add(token.expiresIn, "seconds");
+      const expireAt = loginDate.clone().add(10, "seconds");
       const expired = expireAt.isBefore(moment());
 
       console.log(`==> ExpireAt value ${expireAt}`);
@@ -93,6 +94,8 @@ export default NextAuth({
 
 async function refreshAccessToken(token: JWT) {
   try {
+    console.error("==> SUCCESS when refresh token:");
+
     const response = await authService.refreshToken(token.refresh_token);
     const result = parseJWT(response.access_token);
     return {

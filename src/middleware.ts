@@ -31,10 +31,9 @@ export async function middleware(req: NextRequest) {
   console.log(`==> MIDDLEWARE_ERROR__${token?.error}`);
 
   if (token?.error === REFRESH_TOKEN_ERROR) {
-    const res = NextResponse.redirect(`${origin}/signin`);
-    res.cookies.delete("next-auth.session-token");
-    res.cookies.delete("__Secure-next-auth.session-token");
-    return res;
+    const signoutUrl = new URL("/api/auth/signout", origin);
+    signoutUrl.searchParams.set("callbackUrl", "/signin");
+    return NextResponse.redirect(signoutUrl);
   }
 
   if (
