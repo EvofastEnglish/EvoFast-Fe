@@ -31,7 +31,7 @@ export async function middleware(req: NextRequest) {
   console.log(`==> MIDDLEWARE_ERROR__${token?.error}`);
 
   if (token?.error === REFRESH_TOKEN_ERROR) {
-    let csrfTokenValue =
+    const csrfTokenValue =
       req.cookies.get('next-auth.csrf-token')?.value?.split('|')[0] ??
       req.cookies.get('__Host-next-auth.csrf-token')?.value?.split('|')[0] ?? '';
     const html = `
