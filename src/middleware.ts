@@ -31,12 +31,15 @@ export async function middleware(req: NextRequest) {
   console.log(`==> MIDDLEWARE_ERROR__${token?.error}`);
 
   if (token?.error === REFRESH_TOKEN_ERROR) {
+    let csrfTokenValue =
+      req.cookies.get('next-auth.csrf-token')?.value?.split('|')[0] ??
+      req.cookies.get('__Host-next-auth.csrf-token')?.value?.split('|')[0] ?? '';
     const html = `
       <html>
         <body>
           <form method="POST" action="${process.env.NEXTAUTH_URL}/api/auth/signout">
             <input type="hidden" name="callbackUrl" value="/signin" />
-            <input type="hidden" name="csrfToken" value="${req.cookies.get('next-auth.csrf-token')?.value?.split('|')[0] ?? ''}" />
+            <input type="hidden" name="csrfToken" value="${csrfTokenValue}" />
           </form>
           <script>document.forms[0].submit();</script>
         </body>
