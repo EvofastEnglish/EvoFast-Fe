@@ -51,8 +51,7 @@ export default NextAuth({
       }
 
       const loginDate = moment(token.loginDate);
-      // const expireAt = loginDate.clone().add(token.expiresIn, "seconds");
-      const expireAt = loginDate.clone().add(10, "seconds");
+      const expireAt = loginDate.clone().add(token.expiresIn, "seconds");
       const expired = expireAt.isBefore(moment());
 
       console.log(`==> ExpireAt value ${expireAt}`);
