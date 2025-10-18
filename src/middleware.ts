@@ -31,9 +31,18 @@ export async function middleware(req: NextRequest) {
   console.log(`==> MIDDLEWARE_ERROR__${token?.error}`);
 
   if (token?.error === REFRESH_TOKEN_ERROR) {
-    const signoutUrl = new URL("/api/auth/signout", origin);
-    signoutUrl.searchParams.set("callbackUrl", "/signin");
-    return NextResponse.redirect(signoutUrl);
+    const html = `
+      <html>
+        <body>
+          <form method="POST" action="${origin}/api/auth/signout">
+            <input type="hidden" name="callbackUrl" value="/signin" />
+            <input type="hidden" name="csrfToken" value="${req.cookies.get('next-auth.csrf-token')?.value?.split('|')[0] ?? ''}" />
+          </form>
+          <script>document.forms[0].submit();</script>
+        </body>
+      </html>
+    `;
+    return new NextResponse(html, { headers: { "Content-Type": "text/html" } });
   }
 
   if (
