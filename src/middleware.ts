@@ -34,7 +34,7 @@ export async function middleware(req: NextRequest) {
     const html = `
       <html>
         <body>
-          <form method="POST" action="${origin}/api/auth/signout">
+          <form method="POST" action="${process.env.NEXTAUTH_URL}/api/auth/signout">
             <input type="hidden" name="callbackUrl" value="/signin" />
             <input type="hidden" name="csrfToken" value="${req.cookies.get('next-auth.csrf-token')?.value?.split('|')[0] ?? ''}" />
           </form>
