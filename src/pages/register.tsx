@@ -22,8 +22,8 @@ const Register: React.FC = () => {
     const [form] = Form.useForm();
 
     const [isSpining, setIsSpining] = useState<boolean>(false);
-    const passwordPattern =
-        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[{\]};:'",<.>/?\\|`~]).{6,}$/;
+    // const passwordPattern =
+    //     /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[{\]};:'",<.>/?\\|`~]).{6,}$/;
 
     const onFinish = async (values: RegisterFormValues) => {
         setIsSpining(true);
@@ -136,13 +136,14 @@ const Register: React.FC = () => {
                             {
                                 required: true,
                                 message: t("Please input your password!"),
-                            },
-                            {
-                                pattern: passwordPattern,
-                                message: t(
-                                    "alert_format_value"
-                                ),
-                            },
+                            }
+                            // ,
+                            // {
+                            //     pattern: passwordPattern,
+                            //     message: t(
+                            //         "alert_format_value"
+                            //     ),
+                            // },
                         ]}
                         hasFeedback
                     >
