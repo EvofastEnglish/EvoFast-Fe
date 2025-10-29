@@ -1,7 +1,7 @@
 {
   "Login": "ログイン",
   "or": "または",
-  "Register now!": "今すぐ登録してください！",
+  "Register now!": "登録してください！",
   "Please input your E-mail!": "電子メールを入力してください！",
   "The input is not valid E-mail!": "有効なメールアドレスを入力してください!",
   "Email": "メール",
@@ -21,7 +21,7 @@
   "Please confirm your password": "パスワードを確認してください!",
   "The two passwords do not match": "パスワードが一致しません!",
   "Re-enter your password": "パスワードを再入力してください。",
-  "Register": "登録（とうろく）",
+  "Register": "登録",
   "Already have an account": "すでにアカウントをお持ちですか？",
   "Login now": "今すぐログイン!",
   "Registration successful": "登録が完了しました!",
