@@ -17,7 +17,7 @@
   "Please input your username": "ユーザー名を入力してください!",
   "Password (e.g. P@ssword123)": "パスワード 例：P@ssword123",
   "alert_format_value": "パスワードは6文字以上で、大文字・小文字・数字・記号を含めてください。",
-  "Confirm Password": "パスワード（の）確認",
+  "Confirm Password": "パスワード確認",
   "Please confirm your password": "パスワードを確認してください!",
   "The two passwords do not match": "パスワードが一致しません!",
   "Re-enter your password": "パスワードを再入力してください。",
