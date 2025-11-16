@@ -27,20 +27,28 @@ const Signin: React.FC = () => {
 
   const onFinish = async (values: SignInFormValues) => {
     setIsSpining(true);
-    const res = await signIn("credentials", {
-      redirect: false,
-      username: values.email,
-      password: values.password,
-    });
-    if (res?.error) {
-      setIsSpining(false);
-      return message.error(res?.error);
-    } else {
+
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        username: values.email,
+        password: values.password,
+      });
+      if (res?.error) {
+        message.error("ユーザー名またはパスワードが正しくありません。");
+        return;
+      }
+
       message.success(t("Login successful!"));
+      router.push("/");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      message.error(t("Login failed! Please try again."));
+    } finally {
       setIsSpining(false);
-      return router.push("/");
     }
   };
+
   return (
     <>
       <div className="flex items-center justify-center min-h-screen">

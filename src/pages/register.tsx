@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { RegisterFormValues } from "@/model/user";
+import { ApiErrorResponse, RegisterFormValues } from "@/model/user";
 import authService from "@/services/user";
 import {
     borderSolidColor,
@@ -10,6 +10,7 @@ import {
 } from "@/utils/constants";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { App as AntdApp, Button, Form, Input, Spin } from "antd";
+import { AxiosError } from "axios";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -27,37 +28,77 @@ const Register: React.FC = () => {
 
     const onFinish = async (values: RegisterFormValues) => {
         setIsSpining(true);
-        const username = values.email.split("@")[0];
-        values.firstName = username.toLocaleUpperCase();
-        values.lastName = username.toLocaleUpperCase();
-        values.username = username;
 
-        const response = await authService.register(values);
-        if (response.isSuccess) {
-            form.resetFields();
-            message.success(t("Registration successful"));
-            await autoLogin(values.email, values.password);
-        } else {
+        try {
+            // Chuẩn hóa user info
+            const username = values.email.split("@")[0].toUpperCase();
+            const payload = {
+                ...values,
+                firstName: username,
+                lastName: username,
+                username: username,
+            };
+
+            // Gọi API
+            const response = await authService.register(payload);
+
+            if (response.isSuccess) {
+                form.resetFields();
+                message.success(t("Registration successful"));
+                await autoLogin(values.email, values.password);
+                return; // Early exit
+            }
+
+            // Nếu API không isSuccess
+            message.error(t("Registration error"));
+
+        } catch (err: unknown) {
+            // Safe error handling
+            const axiosErr = err as AxiosError<ApiErrorResponse>;
+            const data = axiosErr.response?.data;
+
+            const msg =
+                data?.detail ||
+                data?.title ||
+                axiosErr.message ||
+                t("Registration error");
+
+            message.error(msg);
+        } finally {
             setIsSpining(false);
-            message.success(t("Registration error"));
         }
     };
 
     const autoLogin = async (email: string, password: string) => {
-        const res = await signIn("credentials", {
-            redirect: false,
-            username: email,
-            password: password,
-        });
+        setIsSpining(true);
 
-        if (res?.error) {
+        try {
+            const res = await signIn("credentials", {
+                redirect: false,
+                username: email,
+                password: password,
+            });
+
+            if (res?.error) {
+                message.error(res.error);
+                return;
+            }
+            router.push("/");
+        } catch (err: unknown) {
+            const axiosErr = err as AxiosError<ApiErrorResponse>;
+            const data = axiosErr.response?.data;
+
+            const msg =
+                data?.detail ||
+                data?.title ||
+                axiosErr.message ||
+                "ログインに失敗しました。";
+            message.error(msg);
+        } finally {
             setIsSpining(false);
-            return message.error(res?.error);
-        } else {
-            setIsSpining(false);
-            return router.push("/");
         }
-    }
+    };
+
 
     return (
         <div className="flex items-center justify-center min-h-screen">

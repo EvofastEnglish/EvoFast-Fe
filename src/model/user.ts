@@ -22,3 +22,11 @@ export interface RegisterFormValues {
 export interface RegisterResponse {
   isSuccess: boolean;
 }
+
+export interface ApiErrorResponse {
+  detail?: string;
+  instance?: string;
+  status?: number;
+  title?: string;
+  traceId?: string;
+}
